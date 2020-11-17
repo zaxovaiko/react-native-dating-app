@@ -2,51 +2,30 @@ import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {useHistory} from 'react-router-native';
 import {Appbar, Button, Text, TextInput, Chip} from 'react-native-paper';
-
-// import {page} from '../../styles/index';
+import {input, page, colors, flexContainer, container, fixedBtn, transparentHeader} from '../../styles/index';
 
 const styles = StyleSheet.create({
-    scroll: {
-        flex: 1,
-        flexDirection: 'column',
-    },
-    container: {
-        flex: 1,
-        textAlign: 'center',
-        justifyContent: 'space-between',
-    },
-    page: {
-        paddingTop: 15,
-        paddingBottom: 15,
-        paddingLeft: 15,
-        paddingRight: 15,
-        backgroundColor: '#fff',
-    },
-    input: {
-        marginBottom: 10,
-        borderRadius: 5,
-    },
+    page,
+    container,
+    flexContainer,
+    input,
+    fixedBtn,
+    transparentHeader,
+    chip: {marginRight: 5, marginBottom: 4},
+    bg: colors.white,
 });
 
 function Create() {
     const history = useHistory();
 
     return (
-        <View style={styles.scroll}>
-            <Appbar.Header
-                dark={false}
-                style={{
-                    backgroundColor: '#fff',
-                    borderColor: 'transparent',
-                    borderBottomWidth: 0,
-                    elevation: 0,
-                    shadowOpacity: 0,
-                }}>
+        <View style={{...styles.page, ...styles.bg}}>
+            <Appbar.Header dark={false} style={styles.transparentHeader}>
                 <Appbar.BackAction onPress={() => history.goBack()} />
                 <Appbar.Content title="New thematic room" />
             </Appbar.Header>
 
-            <View style={{...styles.page, ...styles.container}}>
+            <View style={{...styles.container, ...styles.flexContainer}}>
                 <View>
                     <TextInput
                         style={styles.input}
@@ -65,40 +44,25 @@ function Create() {
                     <View>
                         <Text style={{fontWeight: 'bold', marginBottom: 10}}>Interests</Text>
                         <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-                            <Chip
-                                mode="outlined"
-                                style={{marginRight: 5, marginBottom: 4}}
-                                onPress={() => console.log('Pressed')}>
+                            <Chip mode="outlined" style={styles.chip} onPress={() => console.log('Pressed')}>
                                 sport
                             </Chip>
-                            <Chip
-                                mode="outlined"
-                                style={{marginRight: 5, marginBottom: 4}}
-                                onPress={() => console.log('Pressed')}>
+                            <Chip mode="outlined" style={styles.chip} onPress={() => console.log('Pressed')}>
                                 cooking
                             </Chip>
-                            <Chip
-                                mode="outlined"
-                                style={{marginRight: 5, marginBottom: 4}}
-                                onPress={() => console.log('Pressed')}>
+                            <Chip mode="outlined" style={styles.chip} onPress={() => console.log('Pressed')}>
                                 instagram
                             </Chip>
-                            <Chip
-                                mode="outlined"
-                                style={{marginRight: 5, marginBottom: 4}}
-                                onPress={() => console.log('Pressed')}>
+                            <Chip mode="outlined" style={styles.chip} onPress={() => console.log('Pressed')}>
                                 books
                             </Chip>
-                            <Chip
-                                mode="outlined"
-                                style={{marginRight: 5, marginBottom: 4}}
-                                onPress={() => console.log('Pressed')}>
+                            <Chip mode="outlined" style={styles.chip} onPress={() => console.log('Pressed')}>
                                 movies
                             </Chip>
                             <Chip
                                 mode="outlined"
                                 icon="plus"
-                                style={{marginRight: 5, marginBottom: 4}}
+                                style={styles.chip}
                                 onPress={() => console.log('Pressed')}>
                                 Add
                             </Chip>
@@ -107,10 +71,10 @@ function Create() {
                 </View>
 
                 <Button
-                    style={{...styles.btn, ...{marginLeft: 'auto', marginRight: 'auto'}}}
+                    style={styles.fixedBtn}
                     mode="contained"
                     onPress={() => {
-                        history.push('/login');
+                        history.push('/');
                     }}>
                     Create
                 </Button>

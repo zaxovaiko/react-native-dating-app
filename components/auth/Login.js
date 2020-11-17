@@ -3,37 +3,23 @@ import {Text, Title, TextInput, Button, Caption} from 'react-native-paper';
 import {StyleSheet, View, ScrollView, TouchableOpacity} from 'react-native';
 import {Link} from 'react-router-native';
 
+import {fixedBtn, input, page, flexContainer, container, colors} from '../../styles/index';
+
 const styles = StyleSheet.create({
-    scroll: {
-        flex: 1,
-        flexDirection: 'column',
-    },
-    container: {
-        flex: 1,
-        textAlign: 'center',
-        justifyContent: 'space-between',
-    },
-    page: {
-        paddingTop: 15,
-        paddingBottom: 15,
-        paddingLeft: 15,
-        paddingRight: 15,
-        backgroundColor: '#fff',
-    },
+    page,
+    flexContainer,
+    container,
     text: {
         textAlign: 'center',
         paddingBottom: 10,
         paddingTop: 10,
     },
-    input: {
-        marginBottom: 10,
-        borderRadius: 5,
+    input,
+    fixedBtn,
+    floatRight: {
+        alignItems: 'flex-end',
     },
-    btn: {
-        width: 200,
-        marginLeft: 'auto',
-        marginRight: 'auto',
-    },
+    color: colors.primary,
 });
 
 function Login() {
@@ -41,9 +27,9 @@ function Login() {
     const [pass, setPass] = useState('');
 
     return (
-        <ScrollView contentContainerStyle={{...styles.page, ...styles.scroll}}>
-            <View style={styles.container}>
-                <Text style={{...styles.text, color: '#6200EE'}}>lover</Text>
+        <ScrollView contentContainerStyle={{...styles.container, ...styles.page}}>
+            <View style={styles.flexContainer}>
+                <Text style={{...styles.text, ...styles.color}}>lover</Text>
                 <View>
                     <Title style={styles.text}>Log in</Title>
                     <TextInput
@@ -61,14 +47,14 @@ function Login() {
                         underlineColor="transparent"
                         onChangeText={(text) => setPass(text)}
                     />
-                    <View style={{alignItems: 'flex-end'}}>
+                    <View style={styles.floatRight}>
                         <Link component={TouchableOpacity} to="/password_recover">
                             <Caption>Forgot password?</Caption>
                         </Link>
                     </View>
                 </View>
                 <View>
-                    <Button style={styles.btn} mode="contained" onPress={() => console.log('Pressed')}>
+                    <Button style={styles.fixedBtn} mode="contained" onPress={() => console.log('Pressed')}>
                         Log in
                     </Button>
                     <Link component={TouchableOpacity} to="/signup">

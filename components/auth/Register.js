@@ -2,38 +2,24 @@ import React, {useState} from 'react';
 import {Button, Caption, Checkbox, Text, TextInput, Title} from 'react-native-paper';
 import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Link} from 'react-router-native';
+import {fixedBtn, input, page, flexContainer, container, colors} from '../../styles/index';
 
 const styles = StyleSheet.create({
-    scroll: {
-        flex: 1,
-        flexDirection: 'column',
-    },
-    container: {
-        flex: 1,
-        textAlign: 'center',
-        justifyContent: 'space-between',
-    },
-    page: {
-        paddingTop: 15,
-        paddingBottom: 15,
-        paddingLeft: 15,
-        paddingRight: 15,
-        backgroundColor: '#fff',
-    },
+    page,
+    container,
+    flexContainer,
     text: {
         textAlign: 'center',
         paddingBottom: 10,
         paddingTop: 10,
     },
-    input: {
-        marginBottom: 10,
-        borderRadius: 5,
+    input,
+    fixedBtn,
+    checkbox: {
+        flexDirection: 'row',
+        alignItems: 'center',
     },
-    btn: {
-        width: 200,
-        marginLeft: 'auto',
-        marginRight: 'auto',
-    },
+    color: colors.primary,
 });
 
 function Register() {
@@ -42,9 +28,9 @@ function Register() {
     const [check, setCheck] = useState(false);
 
     return (
-        <ScrollView contentContainerStyle={{...styles.page, ...styles.scroll}}>
-            <View style={styles.container}>
-                <Text style={{...styles.text, color: '#6200EE'}}>lover</Text>
+        <ScrollView contentContainerStyle={{...styles.page, ...styles.container}}>
+            <View style={styles.flexContainer}>
+                <Text style={{...styles.text, ...styles.color}}>lover</Text>
                 <View>
                     <Title style={styles.text}>Sign up</Title>
                     <TextInput
@@ -62,11 +48,7 @@ function Register() {
                         value={pass}
                         onChangeText={(text) => setPass(text)}
                     />
-                    <View
-                        style={{
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                        }}>
+                    <View style={styles.checkbox}>
                         <Checkbox
                             status={check ? 'checked' : 'unchecked'}
                             onPress={() => setCheck((prev) => !prev)}

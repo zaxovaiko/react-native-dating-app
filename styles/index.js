@@ -3,6 +3,12 @@ export const page = {
     flexDirection: 'column',
 };
 
+export const flexContainer = {
+    flex: 1,
+    textAlign: 'center',
+    justifyContent: 'space-between',
+};
+
 export const container = {
     paddingLeft: 15,
     paddingRight: 15,
@@ -26,5 +32,10 @@ export const colors = {
     white: {color: '#fff'},
 };
 
-// TODO: Rewrite all styles to this file
-// TODO: Add back button functionality
+export const transparentHeader = {
+    backgroundColor: '#fff',
+    borderColor: 'transparent',
+    borderBottomWidth: 0,
+    elevation: 0,
+    shadowOpacity: 0,
+};

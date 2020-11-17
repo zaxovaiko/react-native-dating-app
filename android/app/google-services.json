@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "738764952133",
+    "firebase_url": "https://pwr-dating-app.firebaseio.com",
+    "project_id": "pwr-dating-app",
+    "storage_bucket": "pwr-dating-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:738764952133:android:61a85c127fb8cabe8fc92c",
+        "android_client_info": {
+          "package_name": "com.datingapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "738764952133-3a5gg6ivesef24g1q0qstbsq0b6060tp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCP2big_5JWKer0mtC7zzCWr6dBLxLlpdo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "738764952133-3a5gg6ivesef24g1q0qstbsq0b6060tp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

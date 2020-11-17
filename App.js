@@ -10,7 +10,6 @@ import Create from './components/room/Create';
 function App() {
     return (
         <NativeRouter>
-            {/* isAuth ? Redirect to home : Login */}
             <Route exact path="/" component={Home} />
             <Route exact path="/login" component={Login} />
             <Route exact path="/signup" component={Register} />
