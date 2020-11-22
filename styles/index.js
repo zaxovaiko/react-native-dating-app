@@ -26,5 +26,10 @@ export const colors = {
     white: {color: '#fff'},
 };
 
+export const scroll = {
+    flex: 1,
+    flexDirection: 'column',
+};
+
 // TODO: Rewrite all styles to this file
 // TODO: Add back button functionality
