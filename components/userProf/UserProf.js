@@ -2,13 +2,14 @@ import React from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
 import {useHistory} from 'react-router-native';
 import {Appbar, Text, Image, Chip} from 'react-native-paper';
-import {scroll, page, container, input} from '../../styles/index';
+import {scroll, page, container, input, UserInsta} from '../../styles/index';
 
 const styles = StyleSheet.create({
     scroll,
     container,
     page,
     input,
+    UserInsta,
 });
 
 function Profil() {
@@ -63,38 +64,10 @@ function Profil() {
                 <View style={{...styles.page, ...styles.container}}>
                     <Text style={{fontSize: 15, fontWeight: 'bold'}}>Instagram photos:</Text>
                     <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-                        <View
-                            style={{
-                                marginRight: 5,
-                                marginBottom: 4,
-                                backgroundColor: '#000',
-                                width: '23.5%',
-                                height: 90,
-                            }}></View>
-                        <View
-                            style={{
-                                marginRight: 5,
-                                marginBottom: 4,
-                                backgroundColor: '#000',
-                                width: '23.5%',
-                                height: 90,
-                            }}></View>
-                        <View
-                            style={{
-                                marginRight: 5,
-                                marginBottom: 4,
-                                backgroundColor: '#000',
-                                width: '23.5%',
-                                height: 90,
-                            }}></View>
-                        <View
-                            style={{
-                                marginRight: 5,
-                                marginBottom: 4,
-                                backgroundColor: '#000',
-                                width: '23.5%',
-                                height: 90,
-                            }}></View>
+                        <View style={{...styles.UserInsta}}></View>
+                        <View style={{...styles.UserInsta}}></View>
+                        <View style={{...styles.UserInsta}}></View>
+                        <View style={{...styles.UserInsta}}></View>
                     </View>
                 </View>
             </ScrollView>

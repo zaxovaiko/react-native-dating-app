@@ -14,6 +14,12 @@ function Home() {
             <Link to="/userProf/UserProf">
                 <Text>User Profil</Text>
             </Link>
+            <Link to="/settings/Settings">
+                <Text>Settings</Text>
+            </Link>
+            <Link to="/People-nearby/PeopleNearby">
+                <Text>People nearby</Text>
+            </Link>
         </View>
     );
 }
