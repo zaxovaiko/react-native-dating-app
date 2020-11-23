@@ -11,6 +11,9 @@ function Home() {
       <Link to="/room/create">
         <Text>Thematic room page</Text>
       </Link>
+      <Link to="/setup">
+        <Text>Set up profile</Text>
+      </Link>
     </View>
   );
 }

@@ -1,6 +1,7 @@
 export const page = {
   flex: 1,
   flexDirection: 'column',
+  backgroundColor: '#fff',
 };
 
 export const flexContainer = {
