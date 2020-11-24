@@ -49,20 +49,21 @@ export const Dist = {
 export const UserViewName = {
     top: 320,
     width: '100%',
-    backgroundColor: 'rgba(169,169,169, 0.1)',
+    backgroundColor: 'rgba(rgba(228, 233, 237, 0.7)',
     height: 55,
 };
 export const peopleNrbImg = {
     width: '28%',
     height: 100,
     borderRadius: 100,
-    marginRight: 12.5,
+    marginRight: 9,
+    marginLeft: 9,
     marginBottom: 15,
 };
 export const peopleNrbView = {
     top: -30,
     left: 60,
-    width: '46%',
+    width: '50%',
     backgroundColor: '#fff',
     borderWidth: 1,
     borderRadius: 60,
@@ -70,7 +71,8 @@ export const peopleNrbView = {
     height: 20,
 };
 export const peopleNrbText = {
-    left: 3,
+    marginLeft: 'auto',
+    marginRight: 'auto',
 };
 export const peopleImg = {
     width: '100%',

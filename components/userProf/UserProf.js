@@ -78,7 +78,7 @@ function Profil() {
                         instagram
                     </Chip>
                 </View>
-                <View style={{...styles.page, ...styles.container}}>
+                <View style={{...styles.page, left: 15}}>
                     <Text style={{...styles.UserProfTitle}}>Instagram photos:</Text>
                 </View>
                 <View style={{...styles.page, ...styles.container, ...styles.FlexStyle}}>
