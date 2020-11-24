@@ -30,18 +30,39 @@ export const scroll = {
     flex: 1,
     flexDirection: 'column',
 };
+export const FlexStyle = {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+};
+export const UserProfTitle = {
+    fontSize: 15,
+    fontWeight: 'bold',
+};
+export const MainPhoto = {
+    width: '100%',
+    height: 380,
+};
+export const Dist = {
+    marginRight: 5,
+    marginBottom: 4,
+};
+export const UserViewName = {
+    top: 320,
+    width: '100%',
+    backgroundColor: 'rgba(169,169,169, 0.1)',
+    height: 55,
+};
 export const peopleNrbImg = {
-    width: '30%',
-    backgroundColor: '#000',
-    height: 120,
-    borderRadius: 300,
+    width: '28%',
+    height: 100,
+    borderRadius: 100,
     marginRight: 12.5,
     marginBottom: 15,
 };
 export const peopleNrbView = {
-    top: 89,
-    marginLeft: 70,
-    width: '42%',
+    top: -30,
+    left: 60,
+    width: '46%',
     backgroundColor: '#fff',
     borderWidth: 1,
     borderRadius: 60,
@@ -51,12 +72,24 @@ export const peopleNrbView = {
 export const peopleNrbText = {
     left: 3,
 };
+export const peopleImg = {
+    width: '100%',
+    borderRadius: 100,
+    height: 100,
+};
 export const UserInsta = {
     marginRight: 5,
     marginBottom: 4,
-    backgroundColor: '#000',
     width: '23.5%',
     height: 90,
+};
+export const SettText = {
+    top: 10,
+    left: 20,
+};
+export const SettIcon = {
+    width: '12%',
+    height: 40,
 };
 // TODO: Rewrite all styles to this file
 // TODO: Add back button functionality

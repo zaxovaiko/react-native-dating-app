@@ -1,8 +1,19 @@
 import React from 'react';
-import {ScrollView, StyleSheet, View} from 'react-native';
+import {ScrollView, StyleSheet, View, ImageBackground, Image} from 'react-native';
 import {useHistory} from 'react-router-native';
-import {Appbar, Text, Image, Chip} from 'react-native-paper';
-import {scroll, page, container, input, UserInsta} from '../../styles/index';
+import {Appbar, Text, Chip} from 'react-native-paper';
+import {
+    scroll,
+    page,
+    container,
+    input,
+    UserInsta,
+    UserProfTitle,
+    FlexStyle,
+    Dist,
+    MainPhoto,
+    UserViewName,
+} from '../../styles/index';
 
 const styles = StyleSheet.create({
     scroll,
@@ -10,6 +21,11 @@ const styles = StyleSheet.create({
     page,
     input,
     UserInsta,
+    UserProfTitle,
+    FlexStyle,
+    Dist,
+    MainPhoto,
+    UserViewName,
 });
 
 function Profil() {
@@ -32,13 +48,14 @@ function Profil() {
                 </Appbar.Header>
 
                 <View style={{...styles.page, ...styles.container}}>
-                    <View style={{width: '100%', backgroundColor: '#000', height: 380}}>
-                        <View style={{top: 320, width: '100%', backgroundColor: 'rgba(169,169,169, 0.1)', height: 55}}>
+                    <ImageBackground source={require('../iconPhoto/userPhoto.jpg')} style={{...styles.MainPhoto}}>
+                        <View style={{...styles.UserViewName}}>
                             <Text style={{left: 30, fontSize: 25}}>Celestino Dare, 21</Text>
                             <Text style={{left: 30, fontSize: 15}}>Ivano-Frankivsk, Ukraine</Text>
                         </View>
-                    </View>
+                    </ImageBackground>
                 </View>
+
                 <View style={{...styles.page, ...styles.container}}>
                     <Text>
                         I'm a frequent traveler, but not in the spontaneous sort of way. I love to plan my trips and go
@@ -48,27 +65,27 @@ function Profil() {
                     </Text>
                 </View>
                 <View style={{...styles.page}}>
-                    <Text style={{fontSize: 15, fontWeight: 'bold', left: 15}}>Interests:</Text>
+                    <Text style={{...styles.UserProfTitle, left: 15}}>Interests:</Text>
                 </View>
-                <View style={{...styles.page, ...styles.container, flexDirection: 'row', flexWrap: 'wrap'}}>
-                    <Chip mode="outlined" style={{marginRight: 5, marginBottom: 4}}>
+                <View style={{...styles.page, ...styles.container, ...styles.FlexStyle}}>
+                    <Chip mode="outlined" style={{...styles.Dist}}>
                         sport
                     </Chip>
-                    <Chip mode="outlined" style={{marginRight: 5, marginBottom: 4}}>
+                    <Chip mode="outlined" style={{...styles.Dist}}>
                         cooking
                     </Chip>
-                    <Chip mode="outlined" style={{marginRight: 5, marginBottom: 4}}>
+                    <Chip mode="outlined" style={{...styles.Dist}}>
                         instagram
                     </Chip>
                 </View>
                 <View style={{...styles.page, ...styles.container}}>
-                    <Text style={{fontSize: 15, fontWeight: 'bold'}}>Instagram photos:</Text>
-                    <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-                        <View style={{...styles.UserInsta}}></View>
-                        <View style={{...styles.UserInsta}}></View>
-                        <View style={{...styles.UserInsta}}></View>
-                        <View style={{...styles.UserInsta}}></View>
-                    </View>
+                    <Text style={{...styles.UserProfTitle}}>Instagram photos:</Text>
+                </View>
+                <View style={{...styles.page, ...styles.container, ...styles.FlexStyle}}>
+                    <Image source={require('../iconPhoto/UserPhoto1.jpg')} style={{...styles.UserInsta}}></Image>
+                    <Image source={require('../iconPhoto/UserPhoto2.jpg')} style={{...styles.UserInsta}}></Image>
+                    <Image source={require('../iconPhoto/UserPhoto3.jpg')} style={{...styles.UserInsta}}></Image>
+                    <Image source={require('../iconPhoto/UserPhoto4.jpg')} style={{...styles.UserInsta}}></Image>
                 </View>
             </ScrollView>
         </View>

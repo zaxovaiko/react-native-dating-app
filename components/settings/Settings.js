@@ -1,14 +1,17 @@
 import React from 'react';
-import {ScrollView, StyleSheet, View} from 'react-native';
+import {StyleSheet, View, Image} from 'react-native';
 import {useHistory, Link} from 'react-router-native';
-import {Appbar, Text, Image} from 'react-native-paper';
-import {scroll, page, container, input} from '../../styles/index';
+import {Appbar, Text} from 'react-native-paper';
+import {scroll, page, container, input, SettText, SettIcon, FlexStyle} from '../../styles/index';
 
 const styles = StyleSheet.create({
     scroll,
     container,
     page,
     input,
+    SettText,
+    SettIcon,
+    FlexStyle,
 });
 
 function SettingsPage() {
@@ -29,39 +32,45 @@ function SettingsPage() {
                 <Appbar.Content title="Settings" />
             </Appbar.Header>
 
-            <View style={{...styles.container}}>
+            <View style={{...styles.container, ...styles.FlexStyle}}>
+                <Image source={require('../iconPhoto/update-profil.png')} style={{...styles.SettIcon}}></Image>
                 <Link to="">
-                    <Text>Update profil info</Text>
+                    <Text style={{...styles.SettText}}>Update profil info</Text>
                 </Link>
             </View>
 
-            <View style={{...styles.container}}>
+            <View style={{...styles.container, ...styles.FlexStyle}}>
+                <Image source={require('../iconPhoto/change-passw.png')} style={{...styles.SettIcon}}></Image>
                 <Link to="/ChangePassword">
-                    <Text>Change password</Text>
+                    <Text style={{...styles.SettText}}>Change password</Text>
                 </Link>
             </View>
 
-            <View style={{...styles.container}}>
+            <View style={{...styles.container, ...styles.FlexStyle}}>
+                <Image source={require('../iconPhoto/lang.png')} style={{...styles.SettIcon}}></Image>
                 <Link to="">
-                    <Text>Language</Text>
+                    <Text style={{...styles.SettText}}>Language</Text>
                 </Link>
             </View>
 
-            <View style={{...styles.container}}>
+            <View style={{...styles.container, ...styles.FlexStyle}}>
+                <Image source={require('../iconPhoto/create-room.png')} style={{...styles.SettIcon}}></Image>
                 <Link to="/room/create">
-                    <Text>Create a thematic room</Text>
+                    <Text style={{...styles.SettText}}>Create a thematic room</Text>
                 </Link>
             </View>
 
-            <View style={{...styles.container}}>
+            <View style={{...styles.container, ...styles.FlexStyle}}>
+                <Image source={require('../iconPhoto/join-to-room.png')} style={{...styles.SettIcon}}></Image>
                 <Link to="">
-                    <Text>Join to a thematic room</Text>
+                    <Text style={{...styles.SettText}}>Join to a thematic room</Text>
                 </Link>
             </View>
 
-            <View style={{...styles.container, top: 300}}>
+            <View style={{...styles.container, marginTop: 'auto', ...styles.FlexStyle}}>
+                <Image source={require('../iconPhoto/log-out.png')} style={{...styles.SettIcon}}></Image>
                 <Link to="">
-                    <Text>Log out</Text>
+                    <Text style={{...styles.SettText}}>Log out</Text>
                 </Link>
             </View>
         </View>
