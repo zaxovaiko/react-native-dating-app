@@ -3,6 +3,7 @@ import {View, Text} from 'react-native';
 import {Link} from 'react-router-native';
 
 function Home() {
+
     return (
         <View>
             <Link to="/login">
@@ -20,8 +21,11 @@ function Home() {
             <Link to="/People-nearby/PeopleNearby">
                 <Text>People nearby</Text>
             </Link>
+            <Link to="/setup">
+                <Text>Set up profile</Text>
+            </Link>
         </View>
-    );
+     );
 }
 
 export default Home;
