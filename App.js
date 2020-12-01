@@ -9,6 +9,10 @@ import PasswordRecover from './components/auth/PasswordRecover';
 
 import Home from './components/Home';
 import Create from './components/room/Create';
+import Profil from './components/userProf/UserProf';
+import SettingsPage from './components/settings/Settings';
+import ChangePassword from './components/auth/ChangePassword';
+import PeopleNearby from './components/People-nearby/PeopleNearby';
 import Setup from './components/user/Setup';
 
 function App() {
@@ -44,6 +48,14 @@ function App() {
             <>
               <Route exact path="/room/create" component={Create} />
               <Route exact path="/setup" component={Setup} />
+              <Route exact path="/userProf/UserProf" component={Profil} />
+              <Route exact path="/settings/Settings" component={SettingsPage} />
+              <Route exact path="/ChangePassword" component={ChangePassword} />
+              <Route
+                exact
+                path="/People-nearby/PeopleNearby"
+                component={PeopleNearby}
+              />
             </>
           )}
           {!user && (
