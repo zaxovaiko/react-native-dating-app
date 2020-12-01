@@ -3,7 +3,6 @@ import {View, ScrollView, StyleSheet, Image} from 'react-native';
 import {useHistory} from 'react-router-native';
 import {Appbar, Paragraph, Text, Chip, Button} from 'react-native-paper';
 import Slider from '@react-native-community/slider';
-
 import {
   page,
   flexContainer,
