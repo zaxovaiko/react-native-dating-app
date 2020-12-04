@@ -1,16 +1,15 @@
 import React from 'react';
 import {ScrollView, StyleSheet, View, Image} from 'react-native';
-import {Text} from 'react-native-paper';
 import LightHeader from './layouts/LightHeader';
 
-function Nearby() {
+function Liked() {
   return (
     <View style={styles.container}>
       <ScrollView>
-        <LightHeader title="People nearby" />
+        <LightHeader title="They like you" />
 
         <View style={styles.images}>
-          {[...Array(10).keys()].map((i) => (
+          {[...Array(20).keys()].map((e, i) => (
             <View key={i} style={styles.imageBlock}>
               <Image
                 source={{
@@ -18,7 +17,6 @@ function Nearby() {
                 }}
                 style={styles.image}
               />
-              <Text style={styles.distance}>{i + 10} km</Text>
             </View>
           ))}
         </View>
@@ -48,16 +46,6 @@ const styles = StyleSheet.create({
     aspectRatio: 1,
     borderRadius: 300,
   },
-  distance: {
-    position: 'absolute',
-    bottom: 0,
-    right: 10,
-    backgroundColor: '#fff',
-    paddingHorizontal: 5,
-    borderRadius: 100,
-    borderWidth: 1,
-    borderColor: '#ddd',
-  },
 });
 
-export default Nearby;
+export default Liked;
