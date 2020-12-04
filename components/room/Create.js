@@ -1,7 +1,6 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {StyleSheet, View} from 'react-native';
-import {useHistory} from 'react-router-native';
-import {Appbar, Button, Text, TextInput, Chip} from 'react-native-paper';
+import {Button, Text, TextInput, Chip} from 'react-native-paper';
 import {
   input,
   page,
@@ -11,79 +10,50 @@ import {
   fixedBtn,
   transparentHeader,
 } from '../../styles/index';
-
-const styles = StyleSheet.create({
-  page,
-  container,
-  flexContainer,
-  input,
-  fixedBtn,
-  transparentHeader,
-  chip: {marginRight: 5, marginBottom: 4},
-  bg: colors.white,
-});
+import LightHeader from '../layouts/LightHeader';
 
 function Create() {
-  const history = useHistory();
+  const [rooms, setRooms] = useState({
+    name: '',
+    topic: '',
+  });
 
   return (
     <View style={{...styles.page, ...styles.bg}}>
-      <Appbar.Header dark={false} style={styles.transparentHeader}>
-        <Appbar.BackAction onPress={() => history.goBack()} />
-        <Appbar.Content title="New thematic room" />
-      </Appbar.Header>
+      <LightHeader title="New thematic room" />
 
       <View style={{...styles.container, ...styles.flexContainer}}>
         <View>
           <TextInput
             style={styles.input}
             label="Room name"
-            value={''}
+            value={rooms.name}
             underlineColor="transparent"
-            onChangeText={(text) => {}}
+            onChangeText={(text) => setRooms((p) => ({...p, name: text}))}
           />
           <TextInput
             style={styles.input}
             label="Room topic"
-            value={''}
+            value={rooms.topic}
             underlineColor="transparent"
-            onChangeText={(text) => {}}
+            onChangeText={(text) => setRooms((p) => ({...p, topic: text}))}
           />
           <View>
             <Text style={{fontWeight: 'bold', marginBottom: 10}}>
               Interests
             </Text>
             <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-              <Chip
-                mode="outlined"
-                style={styles.chip}
-                onPress={() => console.log('Pressed')}>
-                sport
-              </Chip>
-              <Chip
-                mode="outlined"
-                style={styles.chip}
-                onPress={() => console.log('Pressed')}>
-                cooking
-              </Chip>
-              <Chip
-                mode="outlined"
-                style={styles.chip}
-                onPress={() => console.log('Pressed')}>
-                instagram
-              </Chip>
-              <Chip
-                mode="outlined"
-                style={styles.chip}
-                onPress={() => console.log('Pressed')}>
-                books
-              </Chip>
-              <Chip
-                mode="outlined"
-                style={styles.chip}
-                onPress={() => console.log('Pressed')}>
-                movies
-              </Chip>
+              {['sport', 'cooking', 'instagram', 'books', 'movies'].map(
+                (tag, i) => (
+                  <Chip
+                    key={i}
+                    mode="outlined"
+                    style={styles.chip}
+                    onPress={() => console.log('Pressed')}>
+                    {tag}
+                  </Chip>
+                ),
+              )}
               <Chip
                 mode="outlined"
                 icon="plus"
@@ -95,17 +65,23 @@ function Create() {
           </View>
         </View>
 
-        <Button
-          style={styles.fixedBtn}
-          mode="contained"
-          onPress={() => {
-            history.push('/');
-          }}>
+        <Button style={styles.fixedBtn} mode="contained">
           Create
         </Button>
       </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  page,
+  container,
+  flexContainer,
+  input,
+  fixedBtn,
+  transparentHeader,
+  chip: {marginRight: 5, marginBottom: 4},
+  bg: colors.white,
+});
 
 export default Create;

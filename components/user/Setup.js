@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import {View, ScrollView, StyleSheet, Image} from 'react-native';
-import {useHistory} from 'react-router-native';
-import {Appbar, Paragraph, Text, Chip, Button} from 'react-native-paper';
+import {Paragraph, Text, Chip, Button} from 'react-native-paper';
 import Slider from '@react-native-community/slider';
 import {
   page,
@@ -10,17 +9,16 @@ import {
   transparentHeader,
   fixedBtn,
 } from '../../styles/index';
+import LightHeader from '../layouts/LightHeader';
+
+const tags = ['sport', 'cooking', 'instagram', 'movies', 'code'];
 
 function Setup() {
   const [minAge, setMinAge] = useState(18);
-  const history = useHistory();
 
   return (
     <ScrollView style={{...styles.page}}>
-      <Appbar.Header dark={false} style={styles.transparentHeader}>
-        <Appbar.BackAction onPress={() => history.goBack()} />
-        <Appbar.Content title="Set up profile" />
-      </Appbar.Header>
+      <LightHeader title="Set up profile" />
 
       <View
         style={{
@@ -37,7 +35,6 @@ function Setup() {
           />
         </View>
 
-        {/* Birthday row */}
         <View style={styles.row}>
           <Paragraph style={styles.rowTitle}>Birthday</Paragraph>
           <Chip
@@ -48,7 +45,6 @@ function Setup() {
           </Chip>
         </View>
 
-        {/* Gender row */}
         <View style={styles.row}>
           <Paragraph style={styles.rowTitle}>Gender</Paragraph>
           <Chip
@@ -59,7 +55,6 @@ function Setup() {
           </Chip>
         </View>
 
-        {/* Interested in row */}
         <View style={styles.row}>
           <Paragraph style={styles.rowTitle}>Interested in</Paragraph>
           <Chip
@@ -70,7 +65,6 @@ function Setup() {
           </Chip>
         </View>
 
-        {/* Slider row */}
         <View>
           <View style={styles.row}>
             <Paragraph style={styles.rowTitle}>Age</Paragraph>
@@ -91,30 +85,20 @@ function Setup() {
           />
         </View>
 
-        {/* Tags row */}
         <View>
           <Paragraph style={{...styles.rowTitle, ...styles.chips}}>
             Tags
           </Paragraph>
           <View style={styles.row}>
-            <Chip
-              mode="outlined"
-              style={styles.chips}
-              onPress={() => console.log('Pressed')}>
-              sport
-            </Chip>
-            <Chip
-              mode="outlined"
-              style={styles.chips}
-              onPress={() => console.log('Pressed')}>
-              cooking
-            </Chip>
-            <Chip
-              mode="outlined"
-              style={styles.chips}
-              onPress={() => console.log('Pressed')}>
-              movies
-            </Chip>
+            {tags.map((tag, i) => (
+              <Chip
+                key={i}
+                mode="outlined"
+                style={styles.chips}
+                onPress={() => console.log('Pressed')}>
+                {tag}
+              </Chip>
+            ))}
             <Chip
               mode="outlined"
               style={styles.chips}
@@ -124,12 +108,7 @@ function Setup() {
           </View>
         </View>
 
-        <Button
-          style={styles.fixedBtn}
-          mode="contained"
-          onPress={() => {
-            history.push('/');
-          }}>
+        <Button style={styles.fixedBtn} mode="contained" onPress={() => {}}>
           Save profile
         </Button>
       </View>
@@ -177,5 +156,4 @@ const styles = StyleSheet.create({
   },
 });
 
-// TODO: Add modal window for chip choosing (interests)
 export default Setup;

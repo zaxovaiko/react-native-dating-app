@@ -21,41 +21,29 @@ import {
 
 function Register() {
   const history = useHistory();
-  const [error, setError] = useState({error: false, msg: ''});
+
+  const [error, setError] = useState('');
+  const [check, setCheck] = useState(false);
   const [email, setEmail] = useState('zaxovaiko@gmail.com');
   const [password, setPassword] = useState('password');
-  const [check, setCheck] = useState(false);
 
   function register() {
     if (check) {
       auth()
         .createUserWithEmailAndPassword(email, password)
         .then(() => {
-          console.log('User account created & signed in!');
           history.push('/setup');
         })
         .catch((err) => {
           if (err.code === 'auth/email-already-in-use') {
-            setError({
-              error: true,
-              msg: 'That email address is already in use!',
-            });
+            setError('That email address is already in use!');
           }
-
           if (err.code === 'auth/invalid-email') {
-            setError({
-              error: true,
-              msg: 'That email address is invalid!',
-            });
+            setError('That email address is invalid!');
           }
-
-          console.error(error);
         });
     } else {
-      setError({
-        error: true,
-        msg: 'You need to agree with terms and conditions.',
-      });
+      setError('You need to agree with terms and conditions.');
     }
   }
 
@@ -65,7 +53,7 @@ function Register() {
         <Text style={{...styles.text, ...styles.color}}>lover</Text>
         <View>
           <Title style={styles.text}>Sign up</Title>
-          {error.error && <Text style={styles.error}>{error.msg}</Text>}
+          {error.length > 0 && <Text style={styles.error}>{error}</Text>}
           <TextInput
             style={styles.input}
             label="Email"
@@ -84,10 +72,10 @@ function Register() {
           <View style={styles.checkbox}>
             <Checkbox
               status={check ? 'checked' : 'unchecked'}
-              onPress={() => setCheck((prev) => !prev)}
+              onPress={() => setCheck((p) => !p)}
               color={'blue'}
             />
-            <Text onPress={() => setCheck((prev) => !prev)}>
+            <Text onPress={() => setCheck((p) => !p)}>
               I agree with rights and terms
             </Text>
           </View>

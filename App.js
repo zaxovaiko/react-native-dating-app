@@ -5,15 +5,18 @@ import auth from '@react-native-firebase/auth';
 
 import Login from './components/auth/Login';
 import Register from './components/auth/Register';
-import PasswordRecover from './components/auth/PasswordRecover';
-
-import Home from './components/Home';
-import Create from './components/room/Create';
-import Profil from './components/userProf/UserProf';
-import SettingsPage from './components/settings/Settings';
-import ChangePassword from './components/auth/ChangePassword';
-import PeopleNearby from './components/People-nearby/PeopleNearby';
+import PassRecover from './components/auth/password/Recover';
+import PassChange from './components/auth/password/Change';
+import Settings from './components/user/Settings';
 import Setup from './components/user/Setup';
+
+import Main from './components/Main';
+import Profile from './components/user/Profile';
+import Nearby from './components/Nearby';
+
+import CreateRoom from './components/room/Create';
+import Chats from './components/chats/Chats';
+import Groups from './components/chats/Groups';
 
 function App() {
   const [initializing, setInitializing] = useState(true);
@@ -43,30 +46,24 @@ function App() {
     <PaperProvider>
       <NativeRouter>
         <BackButton>
-          <Route exact path="/" component={Home} />
           {user && (
             <>
-              <Route exact path="/room/create" component={Create} />
+              <Route exact path="/" component={Main} />
+              <Route exact path="/profile" component={Profile} />
+              <Route exact path="/nearby" component={Nearby} />
               <Route exact path="/setup" component={Setup} />
-              <Route exact path="/userProf/UserProf" component={Profil} />
-              <Route exact path="/settings/Settings" component={SettingsPage} />
-              <Route exact path="/ChangePassword" component={ChangePassword} />
-              <Route
-                exact
-                path="/People-nearby/PeopleNearby"
-                component={PeopleNearby}
-              />
+              <Route exact path="/settings" component={Settings} />
+              <Route exact path="/password/change" component={PassChange} />
+              <Route exact path="/chats" component={Chats} />
+              <Route exact path="/rooms" component={Groups} />
+              <Route exact path="/rooms/create" component={CreateRoom} />
             </>
           )}
           {!user && (
             <>
-              <Route exact path="/login" component={Login} />
+              <Route exact path={['/', '/login']} component={Login} />
               <Route exact path="/register" component={Register} />
-              <Route
-                exact
-                path="/password_recover"
-                component={PasswordRecover}
-              />
+              <Route exact path="/password/recover" component={PassRecover} />
             </>
           )}
         </BackButton>

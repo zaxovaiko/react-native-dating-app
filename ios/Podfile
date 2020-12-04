@@ -12,6 +12,8 @@ target 'DatingApp' do
 
   pod 'react-native-slider', :path => '../node_modules/@react-native-community/slider'
 
+  pod 'RNSVG', :path => '../node_modules/react-native-svg'
+
   target 'DatingAppTests' do
     inherit! :complete
     # Pods for testing

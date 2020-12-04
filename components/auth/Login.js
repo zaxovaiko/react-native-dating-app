@@ -3,7 +3,6 @@ import {Text, Title, TextInput, Button, Caption} from 'react-native-paper';
 import {StyleSheet, View, ScrollView, TouchableOpacity} from 'react-native';
 import {Link, useHistory} from 'react-router-native';
 import auth from '@react-native-firebase/auth';
-
 import {
   fixedBtn,
   input,
@@ -38,8 +37,6 @@ function Login() {
         if (err.code === 'auth/invalid-email') {
           setError({error: true, msg: 'Invalid email.'});
         }
-
-        console.error(err);
       });
   }
 
@@ -66,7 +63,7 @@ function Login() {
             onChangeText={(text) => setPassword(text)}
           />
           <View style={styles.floatRight}>
-            <Link component={TouchableOpacity} to="/password_recover">
+            <Link component={TouchableOpacity} to="/password/recover">
               <Caption>Forgot password?</Caption>
             </Link>
           </View>
@@ -91,17 +88,17 @@ const styles = StyleSheet.create({
   page,
   flexContainer,
   container,
+  input,
+  fixedBtn,
+  color: colors.primary,
   text: {
     textAlign: 'center',
     paddingBottom: 10,
     paddingTop: 10,
   },
-  input,
-  fixedBtn,
   floatRight: {
     alignItems: 'flex-end',
   },
-  color: colors.primary,
   error: {
     color: 'red',
     textAlign: 'center',
