@@ -1,24 +1,116 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import {View, ScrollView, StyleSheet, Image} from 'react-native';
-import {Paragraph, Text, Chip, Button} from 'react-native-paper';
-import Slider from '@react-native-community/slider';
 import {
-  page,
-  flexContainer,
-  container,
-  transparentHeader,
-  fixedBtn,
-} from '../../styles/index';
+  Paragraph,
+  Text,
+  Chip,
+  Button,
+  Portal,
+  Dialog,
+  TextInput,
+} from 'react-native-paper';
+import AppContext from '../../contexts/AppContext';
+import Slider from '@react-native-community/slider';
 import LightHeader from '../layouts/LightHeader';
+import {Picker} from '@react-native-picker/picker';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import firestore from '@react-native-firebase/firestore';
+import Filter from 'bad-words';
 
-const tags = ['sport', 'cooking', 'instagram', 'movies', 'code'];
+const filter = new Filter();
 
 function Setup() {
+  const {user, setComplete} = useContext(AppContext);
+
   const [minAge, setMinAge] = useState(18);
+  const [gender, setGender] = useState('Gender');
+  const [interestedIn, setInterestedIn] = useState('Interested in');
+
+  const [modalError, setModalError] = useState('');
+  const [showTagModal, setShowTagModal] = useState(false);
+  const [tags, setTags] = useState([]);
+  const [tag, setTag] = useState('');
+  const [date, setDate] = useState(Date.now());
+  const [showDatePicker, setShowDatePicker] = useState(false);
+
+  function onChangeDate(e, selectedDate) {
+    setDate(selectedDate || date);
+    setShowDatePicker(false);
+  }
+
+  function removeFromTags(idx) {
+    setTags((p) => p.filter((e, i) => i !== idx));
+  }
+
+  function addTagToList() {
+    if (tag.length > 12 || tag.length < 3) {
+      setModalError('Word length must be in range 3 and 12');
+      return;
+    }
+    setTags((p) => [...p, filter.clean(tag || '')]);
+    setTag('');
+    setModalError('');
+    setShowTagModal(false);
+  }
+
+  function saveProfileInfo() {
+    firestore()
+      .collection('users')
+      .where('uid', '==', user.uid)
+      .get()
+      .then((doc) => {
+        firestore()
+          .collection('users')
+          .doc(doc.docs[0].id)
+          .update({
+            gender,
+            interestedIn,
+            minAge,
+            tags,
+            birth: date,
+            complete: true,
+          })
+          .then(() => {
+            setComplete(true);
+          })
+          .catch((err) => console.log(err));
+      })
+      .catch((err) => console.warn(err));
+  }
 
   return (
-    <ScrollView style={{...styles.page}}>
+    <ScrollView style={styles.page}>
       <LightHeader title="Set up profile" />
+
+      <Portal>
+        <Dialog
+          visible={showTagModal}
+          onDismiss={() => setShowTagModal((p) => !p)}>
+          <Dialog.Title>Add interests</Dialog.Title>
+          <Dialog.Content>
+            {modalError.length > 0 && (
+              <Text style={styles.error}>{modalError}</Text>
+            )}
+            <TextInput
+              placeholder="Type word"
+              mode="outlined"
+              onChangeText={(text) => setTag(text)}
+              value={tag}
+            />
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={() => addTagToList()}>Add</Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
+
+      {showDatePicker && (
+        <DateTimePicker
+          value={date}
+          display="default"
+          onChange={onChangeDate}
+        />
+      )}
 
       <View
         style={{
@@ -40,29 +132,35 @@ function Setup() {
           <Chip
             mode="outlined"
             style={styles.mr}
-            onPress={() => console.log('Pressed')}>
-            01.09.2000
+            onPress={() => setShowDatePicker(true)}>
+            {new Date(date).toLocaleDateString('ru-RU')}
           </Chip>
         </View>
 
         <View style={styles.row}>
           <Paragraph style={styles.rowTitle}>Gender</Paragraph>
-          <Chip
-            mode="outlined"
-            style={styles.mr}
-            onPress={() => console.log('Pressed')}>
-            Male
-          </Chip>
+          <Picker
+            selectedValue={gender}
+            style={styles.picker}
+            mode="dialog"
+            onValueChange={(v) => setGender(v)}>
+            <Picker.Item label="Male" value="male" />
+            <Picker.Item label="Female" value="female" />
+            <Picker.Item label="Other" value="other" />
+          </Picker>
         </View>
 
         <View style={styles.row}>
           <Paragraph style={styles.rowTitle}>Interested in</Paragraph>
-          <Chip
-            mode="outlined"
-            style={styles.mr}
-            onPress={() => console.log('Pressed')}>
-            Women
-          </Chip>
+          <Picker
+            selectedValue={interestedIn}
+            style={styles.picker}
+            mode="dialog"
+            onValueChange={(v) => setInterestedIn(v)}>
+            <Picker.Item label="Women" value="women" />
+            <Picker.Item label="Men" value="men" />
+            <Picker.Item label="Both" value="both" />
+          </Picker>
         </View>
 
         <View>
@@ -79,9 +177,7 @@ function Setup() {
             maximumTrackTintColor="#6200ee"
             step={1}
             value={18}
-            onValueChange={(e) => {
-              setMinAge(e);
-            }}
+            onValueChange={(e) => setMinAge(e)}
           />
         </View>
 
@@ -90,25 +186,28 @@ function Setup() {
             Tags
           </Paragraph>
           <View style={styles.row}>
-            {tags.map((tag, i) => (
+            {tags.map((tg, i) => (
               <Chip
                 key={i}
                 mode="outlined"
                 style={styles.chips}
-                onPress={() => console.log('Pressed')}>
-                {tag}
+                onPress={() => removeFromTags(i)}>
+                {tg}
               </Chip>
             ))}
             <Chip
               mode="outlined"
               style={styles.chips}
-              onPress={() => console.log('Pressed')}>
+              onPress={() => setShowTagModal(true)}>
               +
             </Chip>
           </View>
         </View>
 
-        <Button style={styles.fixedBtn} mode="contained" onPress={() => {}}>
+        <Button
+          style={styles.fixedBtn}
+          mode="contained"
+          onPress={() => saveProfileInfo()}>
           Save profile
         </Button>
       </View>
@@ -117,17 +216,38 @@ function Setup() {
 }
 
 const styles = StyleSheet.create({
-  page,
-  flexContainer,
-  container,
-  transparentHeader,
-  fixedBtn,
+  page: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  error: {
+    color: 'red',
+  },
+  picker: {
+    height: 40,
+    width: 118,
+    marginLeft: 'auto',
+    fontSize: 10,
+    textAlign: 'right',
+  },
+  flexContainer: {
+    flex: 1,
+    textAlign: 'center',
+    justifyContent: 'space-between',
+  },
+  container: {
+    padding: 15,
+  },
+  fixedBtn: {
+    marginHorizontal: 'auto',
+  },
   fixes: {
     justifyContent: 'flex-start',
   },
   row: {
     marginBottom: 20,
     flexDirection: 'row',
+    flexWrap: 'wrap',
     alignItems: 'center',
   },
   rowTitle: {

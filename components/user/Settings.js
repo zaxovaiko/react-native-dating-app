@@ -2,7 +2,6 @@ import React from 'react';
 import {StyleSheet, View, TouchableOpacity} from 'react-native';
 import {useHistory, Link} from 'react-router-native';
 import {Text} from 'react-native-paper';
-import {scroll, page, container, transparentHeader} from '../../styles/index';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {
   faSignOutAlt,
@@ -39,9 +38,9 @@ function SettingsPage() {
 
       <View style={{...styles.container, ...styles.scroll}}>
         {links.map(({icon, link, text}, i) => (
-          <Link to={link} key={i}>
+          <Link to={link} key={i} component={TouchableOpacity}>
             <View style={{...styles.group}}>
-              <FontAwesomeIcon style={styles.icon} size={26} icon={icon} />
+              <FontAwesomeIcon style={styles.icon} size={14} icon={icon} />
               <Text style={styles.groupText}>{text}</Text>
             </View>
           </Link>
@@ -53,7 +52,7 @@ function SettingsPage() {
             ...styles.bottomGroup,
           }}
           onPress={() => logout()}>
-          <FontAwesomeIcon style={styles.icon} size={26} icon={faSignOutAlt} />
+          <FontAwesomeIcon style={styles.icon} size={14} icon={faSignOutAlt} />
           <Text style={styles.groupText}>Log out</Text>
         </TouchableOpacity>
       </View>
@@ -61,10 +60,19 @@ function SettingsPage() {
   );
 }
 
+// FIXME: Add fields (name, place and age)
 const styles = StyleSheet.create({
-  scroll,
-  container,
-  page,
+  scroll: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  container: {
+    padding: 15,
+  },
+  page: {
+    flex: 1,
+    flexDirection: 'column',
+  },
   group: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -78,7 +86,7 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   icon: {
-    color: '#bbb',
+    color: '#262626',
     padding: 15,
   },
 });

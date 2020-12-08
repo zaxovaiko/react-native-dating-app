@@ -22,10 +22,10 @@ function Login() {
     auth()
       .signInWithEmailAndPassword(email, password)
       .then(() => {
-        console.log('User account created & signed in!');
         history.push('/');
       })
       .catch((err) => {
+        console.log(err);
         if (err.code === 'auth/user-not-found') {
           setError({error: true, msg: 'User was not found.'});
         }

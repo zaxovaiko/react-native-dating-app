@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 import {
   Button,
   Caption,
@@ -31,8 +32,17 @@ function Register() {
     if (check) {
       auth()
         .createUserWithEmailAndPassword(email, password)
-        .then(() => {
-          history.push('/setup');
+        .then(({user}) => {
+          firestore()
+            .collection('users')
+            .add({
+              email: user.email,
+              uid: user.uid,
+              complete: false,
+            })
+            .then(() => {
+              history.push('/setup');
+            });
         })
         .catch((err) => {
           if (err.code === 'auth/email-already-in-use') {
@@ -40,6 +50,10 @@ function Register() {
           }
           if (err.code === 'auth/invalid-email') {
             setError('That email address is invalid!');
+          }
+
+          if (err.code === 'auth/weak-password') {
+            setError('Password is not strong enough!');
           }
         });
     } else {

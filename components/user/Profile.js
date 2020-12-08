@@ -1,16 +1,38 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {ScrollView, StyleSheet, View, Image} from 'react-native';
 import {Text, Chip, Caption} from 'react-native-paper';
 import LightHeader from '../layouts/LightHeader';
+import firestore from '@react-native-firebase/firestore';
+import AppContext from '../../contexts/AppContext';
 
 const MAX_LENGTH = 60;
 
 function Profile() {
+  const {user} = useContext(AppContext);
+
+  const [show, setShow] = useState(false);
+  const [userinfo, setUserinfo] = useState({});
   const [status, setStatus] = useState({
     text:
       "I'm a frequent traveler, but not in the spontaneous sort of way. I love to plan my trips and go out on mini-adventures once I feel comfortable there. You can say I'm an organized free spirit. I love to try out new food, immerse myself in the beautiful culture of other places, and meet locals. I'm excited to meet you so we can plan our next adventure together!",
     show: false,
   });
+
+  useEffect(() => {
+    firestore()
+      .collection('users')
+      .where('uid', '==', user.uid)
+      .get()
+      .then((doc) => {
+        setUserinfo(doc.docs[0].data());
+        setShow(true);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
+  if (!show) {
+    return null;
+  }
 
   return (
     <View style={styles.container}>
@@ -21,12 +43,12 @@ function Profile() {
           <Image
             source={{
               uri:
-                'https://i.pinimg.com/736x/3a/b8/71/3ab871d37cb3ef97c0f4989fde65e775.jpg',
+                'https://www.wallpaperup.com/uploads/wallpapers/2019/04/28/1321159/385b08992e91e605d2cb3d8b1aa0d8c4.jpg',
             }}
             style={styles.mainImg}
           />
           <View style={styles.userinfo}>
-            <Text style={styles.username}>Celestino Dare, 21</Text>
+            <Text style={styles.username}>{userinfo.email}, 21</Text>
             <Text style={styles.location}>Ivano-Frankivsk, Ukraine</Text>
           </View>
         </View>
@@ -50,7 +72,7 @@ function Profile() {
           <View style={styles.mb}>
             <Text style={styles.sectionTitle}>Interests:</Text>
             <View style={styles.row}>
-              {['sport', 'cooking', 'instagram'].map((e, i) => (
+              {userinfo.tags.map((e, i) => (
                 <Chip style={styles.mr} key={i} mode="outlined">
                   {e}
                 </Chip>
@@ -62,12 +84,12 @@ function Profile() {
             <Text style={styles.sectionTitle}>Instagram photos:</Text>
             <View style={styles.igImages}>
               {[...Array(4).keys()].map((_, i) => (
-                <View style={styles.igImageWrapper}>
+                <View style={styles.igImageWrapper} key={i}>
                   <Image
                     key={i}
                     source={{
                       uri:
-                        'https://i.pinimg.com/736x/5e/54/92/5e54924df3159914a44d7535aafb344c.jpg',
+                        'https://www.wallpaperup.com/uploads/wallpapers/2019/04/28/1321159/385b08992e91e605d2cb3d8b1aa0d8c4.jpg',
                     }}
                     style={styles.igImage}
                   />
@@ -106,7 +128,7 @@ const styles = StyleSheet.create({
   },
   mainImg: {
     width: '100%',
-    aspectRatio: 9 / 16,
+    aspectRatio: 3 / 4,
   },
   location: {
     fontSize: 13,
