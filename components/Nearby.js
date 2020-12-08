@@ -10,7 +10,7 @@ function Nearby() {
         <LightHeader title="People nearby" />
 
         <View style={styles.images}>
-          {[...Array(10).keys()].map((i) => (
+          {[...Array(10).keys()].map((e, i) => (
             <View key={i} style={styles.imageBlock}>
               <Image
                 source={{
