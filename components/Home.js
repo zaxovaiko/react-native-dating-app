@@ -14,6 +14,9 @@ function Home() {
             <Link to="/chats/MainChats">
                 <Text>Chats</Text>
             </Link>
+            <Link to="/chats/Correspondence">
+                <Text>Correspondence</Text>
+            </Link>
         </View>
     );
 }

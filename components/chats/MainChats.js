@@ -4,40 +4,8 @@ import {StyleSheet, View, Image, ImageBackground} from 'react-native';
 import {useHistory, Link} from 'react-router-native';
 import {Appbar, Text} from 'react-native-paper';
 
-import {
-    scroll,
-    page,
-    container,
-    input,
-    chatImg,
-    chatView,
-    chatText0,
-    chatText,
-    chatText2,
-    chatText3,
-    FlexStyle,
-    peopleIcon,
-} from '../../styles/index';
 
-// import {page} from '../../styles/index';
-
-const styles = StyleSheet.create({
-    scroll,
-    container,
-    page,
-    input,
-    chatImg,
-    chatView,
-    chatText0,
-    chatText,
-    chatText2,
-    chatText3,
-    FlexStyle,
-    peopleIcon,
-});
-
-
-function CreateChats() {
+function Chats() {
     const history = useHistory();
 
     return (
@@ -70,19 +38,16 @@ function CreateChats() {
                     </ImageBackground>
                     <ImageBackground style={{...styles.chatImg}}>
                         <Image source={require('../icons/User1.jpg')} style={{...styles.peopleIcon}}></Image>
-                        <View style={
-                                styles.chatView
-                        }>
+                        <View style={styles.chatView}>
                             <View>
-                            <Link to="">
-                                <Text style={styles.chatText}>Jessica</Text>
-                            </Link>
-                            <Link to="">
-                                <Text style={styles.chatText2}>Lunch today?</Text>
-                            </Link>
+                                <Link to="">
+                                    <Text>Jessica</Text>
+                                </Link>
+                                <Link to="">
+                                    <Text>Lunch today?</Text>
+                                </Link>
                             </View>
                                 <Text style={styles.chatText3}>now</Text>
-
                         </View>
                     </ImageBackground>
                     <ImageBackground style={styles.chatImg}>
@@ -91,10 +56,10 @@ function CreateChats() {
                         <View style={styles.chatView}>
                             <View>
                             <Link to="">
-                                <Text style={styles.chatText}>Ola</Text>
+                                <Text>Ola</Text>
                             </Link>
                             <Link to="">
-                                <Text style={styles.chatText2}>Hello! Nice photos :)</Text>
+                                <Text>Hello! Nice photos :)</Text>
                             </Link>
                             </View>
                                 <Text style={styles.chatText3}>17:15</Text>
@@ -106,10 +71,10 @@ function CreateChats() {
                         <View style={styles.chatView}>
                             <View>
                             <Link to="">
-                                <Text style={styles.chatText}>Mary</Text>
+                                <Text>Mary</Text>
                             </Link>
                             <Link to="">
-                                <Text style={styles.chatText2}>Same to you</Text>
+                                <Text>Same to you</Text>
                             </Link>
                             </View>
                                 <Text style={styles.chatText3}>today</Text>
@@ -122,4 +87,52 @@ function CreateChats() {
     );
 }
 
-export default CreateChats;
+const styles = StyleSheet.create({
+    scroll: {
+        flex: 1,
+        flexDirection: 'column',
+    },
+    container: {
+        paddingLeft: 15,
+        paddingRight: 15,
+        paddingTop: 15,
+        paddingBottom: 15,
+    },
+    page: {
+        flex: 1,
+        flexDirection: 'column',
+    },
+    chatImg: {
+        width: '95%',
+        height: 70,
+        marginLeft: 9,
+        marginBottom: 15,
+        borderColor: '#000',
+    },
+    chatView: {
+        top: -60,
+        left: 80,
+        width: '75%',
+        height: 20,
+        flexDirection: 'row'
+    },
+    chatText0: {
+        top: 12,
+        height: 50,
+        width: 250
+    },
+    chatText3: {
+        marginLeft: 'auto'
+    },
+    FlexStyle: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+    },
+    peopleIcon: {
+        width: 70,
+        borderRadius: 150,
+        height: 70,
+    },
+});
+
+export default Chats;

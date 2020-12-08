@@ -26,5 +26,29 @@ export const colors = {
     white: {color: '#fff'},
 };
 
-// TODO: Rewrite all styles to this file
-// TODO: Add back button functionality
+export const scroll = {
+    flex: 1,
+    flexDirection: 'column',
+};
+export const FlexStyle = {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+};
+export const UserProfTitle = {
+    fontSize: 15,
+    fontWeight: 'bold',
+};
+export const MainPhoto = {
+    width: '100%',
+    height: 380,
+};
+export const Dist = {
+    marginRight: 5,
+    marginBottom: 4,
+};
+export const UserViewName = {
+    top: 320,
+    width: '100%',
+    backgroundColor: 'rgba(rgba(228, 233, 237, 0.7)',
+    height: 55,
+};

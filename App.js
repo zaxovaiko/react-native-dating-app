@@ -6,8 +6,9 @@ import Login from './components/auth/Login';
 import Home from './components/Home';
 import PasswordRecover from './components/auth/PasswordRecover';
 import Create from './components/room/Create';
-import Create from './components/chats/CreateChats';
-import Create from './components/chats/CreateGroupChats';
+import Chats from './components/chats/MainChats';
+import CreateGroupChats from './components/chats/GroupChats';
+import Correspondence from './components/chats/Correspondence';
 
 function App() {
     return (
@@ -18,8 +19,9 @@ function App() {
             <Route exact path="/signup" component={Register} />
             <Route exact path="/password_recover" component={PasswordRecover} />
             <Route exact path="/room/create" component={Create} />
-            <Route exact path="/room/create" component={CreateChats} />
-            <Route exact path="/room/create" component={CreateGroupChats} />
+            <Route exact path="/chats/mainchats" component={Chats} />
+            <Route exact path="/chats/groupchats" component={CreateGroupChats} />
+            <Route exact path="/chats/correspondence" component={Correspondence} />
         </NativeRouter>
     );
 }
