@@ -13,6 +13,14 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import {faStar as frStar} from '@fortawesome/free-regular-svg-icons';
 
+const icons = [
+  {icon: faCog, link: '/settings'},
+  {icon: faUserCircle, link: '/profile'},
+  {icon: faMapMarkerAlt, link: '/nearby'},
+  {icon: faHeart, link: '/liked'},
+  {icon: faComments, link: '/chats'},
+];
+
 function Main() {
   const icons = [
     {icon: faCog, link: '/settings'},
