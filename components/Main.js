@@ -26,7 +26,7 @@ function Main() {
     {icon: faCog, link: '/settings'},
     {icon: faUserCircle, link: '/profile'},
     {icon: faMapMarkerAlt, link: '/nearby'},
-    {icon: faHeart, link: '/interested'},
+    {icon: faHeart, link: '/liked'},
     {icon: faComments, link: '/chats'},
   ];
 

@@ -1,84 +1,58 @@
-import React from 'react';
-import {StyleSheet, View, Image, ImageBackground} from 'react-native';
-import {Link} from 'react-router-native';
-import {Text} from 'react-native-paper';
-import {
-  scroll,
-  page,
-  container,
-  input,
-  chatImg,
-  chatView,
-  chatText0,
-  chatText,
-  chatText2,
-  chatText3,
-  FlexStyle,
-  peopleIcon,
-} from '../../styles/index';
-import LightHeader from '../layouts/LightHeader';
+import React, {useState} from 'react';
+import ChatList from './ChatList';
+import Chat from './Chat';
 
-const messages = [
-  {name: 'Jessica', msg: 'Hello, world!', time: 'now'},
-  {name: 'Jessica', msg: 'Hello, world!', time: 'now'},
-  {name: 'Jessica', msg: 'Hello, world!', time: 'now'},
+const defaultUsers = [
+  {
+    id: 1,
+    name: 'Ann',
+    img:
+      'https://www.wallpaperup.com/uploads/wallpapers/2019/04/28/1321159/385b08992e91e605d2cb3d8b1aa0d8c4.jpg',
+  },
+  {
+    id: 2,
+    name: 'Sara',
+    img:
+      'https://www.wallpaperup.com/uploads/wallpapers/2019/04/28/1321159/385b08992e91e605d2cb3d8b1aa0d8c4.jpg',
+  },
+  {
+    id: 3,
+    name: 'Kate',
+    img:
+      'https://www.wallpaperup.com/uploads/wallpapers/2019/04/28/1321159/385b08992e91e605d2cb3d8b1aa0d8c4.jpg',
+  },
+  {
+    id: 4,
+    name: 'Liz',
+    img:
+      'https://www.wallpaperup.com/uploads/wallpapers/2019/04/28/1321159/385b08992e91e605d2cb3d8b1aa0d8c4.jpg',
+  },
 ];
-
 function Chats() {
-  return (
-    <View style={styles.scroll}>
-      <LightHeader title="Messages" />
+  const [currentPage, setCurrentPage] = useState('users');
+  const [users, setUsers] = useState(defaultUsers);
+  const [userToAdd, setUserToAdd] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null);
 
-      <View style={{...styles.page, ...styles.container, ...styles.FlexStyle}}>
-        <ImageBackground style={styles.chatImg}>
-          <Image
-            source={{uri: 'https://via.placeholder.com/150'}}
-            style={styles.peopleIcon}
-          />
-          <View style={styles.chatView}>
-            <Link to="/chats/groupchats">
-              <Text style={styles.chatText0}>Groups</Text>
-            </Link>
-          </View>
-        </ImageBackground>
+  const onClickUser = (user) => {
+    setCurrentPage('chat');
+    setSelectedUser(user);
+  };
 
-        {messages.map(({name, msg, time}, i) => (
-          <ImageBackground style={{...styles.chatImg}} key={i}>
-            <Image
-              source={{uri: 'https://via.placeholder.com/150'}}
-              style={{...styles.peopleIcon}}
-            />
-            <View style={styles.chatView}>
-              <View>
-                <Link to="/profile">
-                  <Text style={styles.chatText}>{name}</Text>
-                </Link>
-                <Link to="/chats">
-                  <Text style={styles.chatText2}>{msg}</Text>
-                </Link>
-              </View>
-              <Text style={styles.chatText3}>{time}</Text>
-            </View>
-          </ImageBackground>
-        ))}
-      </View>
-    </View>
-  );
+  const onBack = () => {
+    setCurrentPage('users');
+  };
+
+  switch (currentPage) {
+    case 'users':
+      return <ChatList users={users} onClickUser={onClickUser} />;
+
+    case 'chat':
+      return <Chat selectedUser={selectedUser} onBack={onBack} />;
+
+    default:
+      break;
+  }
 }
-
-const styles = StyleSheet.create({
-  scroll,
-  container,
-  page,
-  input,
-  chatImg,
-  chatView,
-  chatText0,
-  chatText,
-  chatText2,
-  chatText3,
-  FlexStyle,
-  peopleIcon,
-});
 
 export default Chats;
