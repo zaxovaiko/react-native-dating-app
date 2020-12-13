@@ -60,7 +60,6 @@ function SettingsPage() {
   );
 }
 
-// FIXME: Add fields (name, place and age)
 const styles = StyleSheet.create({
   scroll: {
     flex: 1,

@@ -1,8 +1,5 @@
 apply plugin: "com.android.application"
-<<<<<<< HEAD
-=======
 apply plugin: 'com.google.gms.google-services'
->>>>>>> dev
 
 import com.android.build.OutputFile
 
@@ -189,18 +186,12 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
-<<<<<<< HEAD
-
-    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
-
-=======
     implementation project(path: ':@react-native-picker_picker')
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
 
     implementation platform('com.google.firebase:firebase-bom:26.1.0')
     implementation 'com.google.firebase:firebase-analytics'
 
->>>>>>> dev
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
       exclude group:'com.facebook.fbjni'
     }

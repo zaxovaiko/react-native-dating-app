@@ -2,6 +2,11 @@
   package="com.datingapp">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Define ACCESS_FINE_LOCATION if you will use enableHighAccuracy=true  -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+
+    <!-- Define ACCESS_COARSE_LOCATION if you will use enableHighAccuracy=false  -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
     <application
       android:name=".MainApplication"

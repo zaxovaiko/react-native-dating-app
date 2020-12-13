@@ -1,20 +1,60 @@
-import React from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {ScrollView, StyleSheet, View, Image} from 'react-native';
 import {Text} from 'react-native-paper';
+import GetLocation from 'react-native-get-location';
+
 import LightHeader from './layouts/LightHeader';
+import {getNearbyUsers} from '../api/location';
+import AppContext from '../contexts/AppContext';
 
 function Nearby() {
+  const {user} = useContext(AppContext);
+  const [users, setUsers] = useState([]);
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    GetLocation.getCurrentPosition({
+      enableHighAccuracy: true,
+      timeout: 15000,
+    })
+      .then((loc) => {
+        if (isMounted) {
+          getNearbyUsers(loc)
+            .then((res) => {
+              setUsers(res.filter((e) => e.email !== user.email));
+              setShow(true);
+            })
+            .catch((err) => console.log(err, 'Nearby useEffect error'));
+        }
+      })
+      .catch((err) => {
+        const {code, message} = err;
+        console.warn(code, message);
+        console.log('Setup useEffect error');
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  if (!show) {
+    return null;
+  }
+
   return (
     <View style={styles.container}>
       <ScrollView>
         <LightHeader title="People nearby" />
 
         <View style={styles.images}>
-          {[...Array(10).keys()].map((e, i) => (
+          {users.map((usr, i) => (
             <View key={i} style={styles.imageBlock}>
               <Image
                 source={{
-                  uri: 'https://via.placeholder.com/720x720',
+                  uri: usr.picture,
                 }}
                 style={styles.image}
               />

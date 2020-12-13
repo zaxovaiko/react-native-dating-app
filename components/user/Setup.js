@@ -1,5 +1,6 @@
-import React, {useState, useContext} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import {View, ScrollView, StyleSheet, Image} from 'react-native';
+import {useHistory} from 'react-router-native';
 import {
   Paragraph,
   Text,
@@ -9,73 +10,162 @@ import {
   Dialog,
   TextInput,
 } from 'react-native-paper';
-import AppContext from '../../contexts/AppContext';
-import Slider from '@react-native-community/slider';
-import LightHeader from '../layouts/LightHeader';
 import {Picker} from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import firestore from '@react-native-firebase/firestore';
-import Filter from 'bad-words';
+import GetLocation from 'react-native-get-location';
+import geohash from 'ngeohash';
+import gravatar from 'gravatar';
 
-const filter = new Filter();
+import AppContext from '../../contexts/AppContext';
+import LightHeader from '../layouts/LightHeader';
+import {getUserById, updateUserById} from '../../api/user';
+import {getTagByName} from '../../api/tags';
 
 function Setup() {
+  const history = useHistory();
   const {user, setComplete} = useContext(AppContext);
 
-  const [minAge, setMinAge] = useState(18);
+  const [showTagModal, setShowTagModal] = useState(false);
+  const [choosedTags, setChoosedTags] = useState([]);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [error, setError] = useState([]);
+  const [tag, setTag] = useState('');
+
+  const [name, setName] = useState('');
+  const [picture, setPicture] = useState(
+    'https://via.placeholder.com/1000.jpg',
+  );
+  const [status, setStatus] = useState('');
+  const [minAge, setMinAge] = useState('18');
+  const [date, setDate] = useState(Date.now());
   const [gender, setGender] = useState('Gender');
   const [interestedIn, setInterestedIn] = useState('Interested in');
-
-  const [modalError, setModalError] = useState('');
-  const [showTagModal, setShowTagModal] = useState(false);
   const [tags, setTags] = useState([]);
-  const [tag, setTag] = useState('');
-  const [date, setDate] = useState(Date.now());
-  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [location, setLocation] = useState({
+    longitude: '',
+    latitude: '',
+    geohash: '',
+  });
+
+  useEffect(() => {
+    let isMounted = true;
+
+    GetLocation.getCurrentPosition({
+      enableHighAccuracy: true,
+      timeout: 15000,
+    })
+      .then((loc) => {
+        const {longitude, latitude} = loc;
+        if (isMounted) {
+          setLocation({
+            latitude,
+            longitude,
+            geohash: geohash.encode(latitude, longitude),
+          });
+        }
+      })
+      .catch((err) => {
+        const {code, message} = err;
+        console.warn(code, message);
+        console.log('Setup useEffect error');
+      });
+
+    getUserById(user.uid)
+      .then((usr) => {
+        if (isMounted) {
+          const dt = new Date(
+            new firestore.Timestamp(
+              parseInt(usr.birth.seconds, 10),
+              parseInt(usr.birth.nanoseconds, 10),
+            ).toMillis(),
+          );
+
+          setName(usr.name);
+          setStatus(usr.status);
+          setDate(dt);
+          setMinAge(usr.minAge);
+          setInterestedIn(usr.interestedIn);
+          setTags(usr.tags);
+          setGender(usr.gender);
+          setPicture(usr.picture);
+        }
+      })
+      .catch((err) => console.log(err, 'Setup useEffect error'));
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   function onChangeDate(e, selectedDate) {
     setDate(selectedDate || date);
     setShowDatePicker(false);
   }
 
-  function removeFromTags(idx) {
-    setTags((p) => p.filter((e, i) => i !== idx));
+  function saveProfileInfo() {
+    setError([]);
+
+    if (name.length > 20 || name.length < 3) {
+      return setError((p) => [
+        ...new Set([...p, 'Name length must be in range 3, 20']),
+      ]);
+    }
+
+    const dateObj = new Date(date);
+    if (
+      new Date(
+        dateObj.getFullYear() + 18,
+        dateObj.getMonth() - 1,
+        dateObj.getDay(),
+      ) > new Date()
+    ) {
+      return setError((p) => [
+        ...new Set([...p, 'You can not be younger than 18 yo']),
+      ]);
+    }
+
+    updateUserById(user.uid, {
+      gender,
+      status,
+      interestedIn,
+      minAge,
+      tags,
+      birth: date,
+      complete: true,
+      name,
+      location,
+      picture: gravatar.url(
+        user.email,
+        {
+          s: '350',
+          r: 'x',
+          d: 'identicon',
+        },
+        true,
+      ),
+    })
+      .then(() => {
+        setComplete(true);
+        history.push('/');
+      })
+      .catch((err) => console.log(err, 'Setup updateUserById error'));
   }
 
-  function addTagToList() {
-    if (tag.length > 12 || tag.length < 3) {
-      setModalError('Word length must be in range 3 and 12');
+  function findTag(text) {
+    setTag(text);
+    if (text.length > 1) {
+      getTagByName(text)
+        .then((docs) => setChoosedTags(docs.docs.map((e) => e.data())))
+        .catch((err) => console.log(err, 'Setup getTagByName error'));
+    }
+  }
+
+  function addToTags(tg) {
+    if (tags.indexOf(tg) !== -1) {
       return;
     }
-    setTags((p) => [...p, filter.clean(tag || '')]);
-    setTag('');
-    setModalError('');
-    setShowTagModal(false);
-  }
-
-  function saveProfileInfo() {
-    firestore()
-      .collection('users')
-      .where('uid', '==', user.uid)
-      .get()
-      .then((doc) => {
-        firestore()
-          .collection('users')
-          .doc(doc.docs[0].id)
-          .update({
-            gender,
-            interestedIn,
-            minAge,
-            tags,
-            birth: date,
-            complete: true,
-          })
-          .then(() => {
-            setComplete(true);
-          })
-          .catch((err) => console.log(err));
-      })
-      .catch((err) => console.warn(err));
+    setTags((p) => [...p, tg]);
   }
 
   return (
@@ -88,18 +178,30 @@ function Setup() {
           onDismiss={() => setShowTagModal((p) => !p)}>
           <Dialog.Title>Add interests</Dialog.Title>
           <Dialog.Content>
-            {modalError.length > 0 && (
-              <Text style={styles.error}>{modalError}</Text>
-            )}
             <TextInput
               placeholder="Type word"
-              mode="outlined"
-              onChangeText={(text) => setTag(text)}
+              underlineColor="transparent"
+              mode="flat"
+              style={styles.findTag}
+              onChangeText={(text) => findTag(text)}
               value={tag}
             />
+            <View style={styles.row}>
+              {choosedTags.length === 0 && <Text>Nothing was found</Text>}
+              {choosedTags.length !== 0 &&
+                choosedTags.map((tg, i) => (
+                  <Chip
+                    key={i}
+                    mode="outlined"
+                    style={styles.chips}
+                    onPress={() => addToTags(tg.name)}>
+                    {tg.name}
+                  </Chip>
+                ))}
+            </View>
           </Dialog.Content>
           <Dialog.Actions>
-            <Button onPress={() => addTagToList()}>Add</Button>
+            <Button onPress={() => setShowTagModal(false)}>Close</Button>
           </Dialog.Actions>
         </Dialog>
       </Portal>
@@ -122,8 +224,31 @@ function Setup() {
           <Image
             style={styles.avatar}
             source={{
-              uri: 'https://via.placeholder.com/1000.jpg',
+              uri: picture,
             }}
+          />
+        </View>
+
+        <View style={styles.row}>
+          <TextInput
+            style={styles.w100}
+            mode="flat"
+            label="Name"
+            value={name}
+            underlineColor="transparent"
+            onChangeText={(text) => setName(text)}
+          />
+        </View>
+
+        <View style={styles.row}>
+          <TextInput
+            style={styles.w100}
+            mode="flat"
+            label="Status"
+            multiline={true}
+            value={status}
+            underlineColor="transparent"
+            onChangeText={(text) => setStatus(text)}
           />
         </View>
 
@@ -163,21 +288,16 @@ function Setup() {
           </Picker>
         </View>
 
-        <View>
-          <View style={styles.row}>
-            <Paragraph style={styles.rowTitle}>Age</Paragraph>
-            <Text style={styles.mr}>{minAge}</Text>
-          </View>
-          <Slider
-            style={{...styles.slider, ...styles.row}}
-            minimumValue={18}
-            maximumValue={60}
-            thumbTintColor="#6200ee"
-            minimumTrackTintColor="#6200ee"
-            maximumTrackTintColor="#6200ee"
-            step={1}
-            value={18}
-            onValueChange={(e) => setMinAge(e)}
+        <View style={styles.row}>
+          <Paragraph style={styles.rowTitle}>Min age to show</Paragraph>
+          <TextInput
+            style={styles.numericInput}
+            mode="flat"
+            keyboardType="numeric"
+            value={minAge}
+            underlineColor="transparent"
+            maxLength={2}
+            onChangeText={(text) => setMinAge(text.replace(/(^0|[^0-9]+)/, ''))}
           />
         </View>
 
@@ -191,7 +311,7 @@ function Setup() {
                 key={i}
                 mode="outlined"
                 style={styles.chips}
-                onPress={() => removeFromTags(i)}>
+                onPress={() => setTags((p) => p.filter((_, idx) => idx !== i))}>
                 {tg}
               </Chip>
             ))}
@@ -203,6 +323,10 @@ function Setup() {
             </Chip>
           </View>
         </View>
+
+        {error.length > 0 && (
+          <Text style={styles.error}>{error.join('\n')}</Text>
+        )}
 
         <Button
           style={styles.fixedBtn}
@@ -220,12 +344,26 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
+  findTag: {
+    borderRadius: 5,
+    marginBottom: 10,
+  },
+  w100: {
+    width: '100%',
+  },
+  numericInput: {
+    width: 45,
+    marginLeft: 'auto',
+    borderRadius: 5,
+  },
   error: {
     color: 'red',
+    textAlign: 'center',
+    marginBottom: 10,
   },
   picker: {
     height: 40,
-    width: 118,
+    width: 120,
     marginLeft: 'auto',
     fontSize: 10,
     textAlign: 'right',

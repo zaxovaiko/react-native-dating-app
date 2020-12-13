@@ -32,7 +32,6 @@ function Main() {
     <View style={styles.container}>
       <View style={styles.topBar}>
         {icons.map(({icon, link}, i) => {
-          console.log(icon, link);
           return (
             <Link key={i} to={link} component={TouchableOpacity}>
               <FontAwesomeIcon
@@ -88,7 +87,6 @@ const styles = StyleSheet.create({
   },
   mainImageBlock: {
     flex: 1,
-    // padding: 15,
     borderRadius: 20,
   },
   mainImage: {

@@ -1,10 +1,10 @@
 import React, {useState, useEffect} from 'react';
 import {NativeRouter, Route, BackButton} from 'react-router-native';
 import {Provider as PaperProvider} from 'react-native-paper';
-import AppContext from './contexts/AppContext';
-
 import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
+
+import {getUserById} from './api/user';
+import AppContext from './contexts/AppContext';
 
 import Login from './components/auth/Login';
 import Register from './components/auth/Register';
@@ -18,8 +18,11 @@ import Profile from './components/user/Profile';
 import Nearby from './components/Nearby';
 
 import CreateRoom from './components/room/Create';
-import Chats from './components/chats/Chats';
+
 import Groups from './components/chats/Groups';
+import MainChat from './components/chats/MainChats';
+import GroupChats from './components/chats/GroupChats';
+import Correspondence from './components/chats/Correspondence';
 
 function App() {
   const [initializing, setInitializing] = useState(true);
@@ -27,26 +30,18 @@ function App() {
   const [complete, setComplete] = useState(false);
 
   function onAuthStateChanged(usr) {
+    setUser(usr);
+
     if (usr) {
-      firestore()
-        .collection('users')
-        .where('uid', '==', usr.uid)
-        .get()
-        .then((doc) => {
-          setComplete(doc.docs[0].data().complete);
-        })
-        .catch((err) => console.log(err));
+      getUserById(usr.uid)
+        .then((doc) => setComplete(doc.complete))
+        .catch((err) => console.log(err, 'App onAuthStateChange error'));
     }
 
-    setUser(usr);
     if (initializing) {
       setInitializing(false);
     }
   }
-
-  useEffect(() => {
-    //
-  });
 
   useEffect(() => {
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
@@ -58,7 +53,7 @@ function App() {
   }
 
   return (
-    <AppContext.Provider value={{user, complete, setComplete}}>
+    <AppContext.Provider value={{user, complete, setUser, setComplete}}>
       <PaperProvider>
         <NativeRouter>
           <BackButton>
@@ -75,9 +70,11 @@ function App() {
                 <Route exact path="/setup" component={Setup} />
                 <Route exact path="/settings" component={Settings} />
                 <Route exact path="/password/change" component={PassChange} />
-                <Route exact path="/chats" component={Chats} />
                 <Route exact path="/rooms" component={Groups} />
                 <Route exact path="/rooms/create" component={CreateRoom} />
+                <Route exact path="/chats" component={MainChat} />
+                <Route exact path="/chats/group" component={GroupChats} />
+                <Route exact path="/chats/unique" component={Correspondence} />
               </>
             )}
             {!user && (

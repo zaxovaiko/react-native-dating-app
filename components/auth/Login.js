@@ -3,14 +3,6 @@ import {Text, Title, TextInput, Button, Caption} from 'react-native-paper';
 import {StyleSheet, View, ScrollView, TouchableOpacity} from 'react-native';
 import {Link, useHistory} from 'react-router-native';
 import auth from '@react-native-firebase/auth';
-import {
-  fixedBtn,
-  input,
-  page,
-  flexContainer,
-  container,
-  colors,
-} from '../../styles/index';
 
 function Login() {
   const history = useHistory();
@@ -18,14 +10,11 @@ function Login() {
   const [password, setPassword] = useState('password');
   const [error, setError] = useState({error: false, msg: ''});
 
-  async function login() {
+  function login() {
     auth()
       .signInWithEmailAndPassword(email, password)
-      .then(() => {
-        history.push('/');
-      })
+      .then(() => history.push('/'))
       .catch((err) => {
-        console.log(err);
         if (err.code === 'auth/user-not-found') {
           setError({error: true, msg: 'User was not found.'});
         }
@@ -44,9 +33,11 @@ function Login() {
     <ScrollView contentContainerStyle={{...styles.container, ...styles.page}}>
       <View style={styles.flexContainer}>
         <Text style={{...styles.text, ...styles.color}}>lover</Text>
+
         <View>
           <Title style={styles.text}>Log in</Title>
           {error.error && <Text style={styles.error}>{error.msg}</Text>}
+
           <TextInput
             style={styles.input}
             label="Email"
@@ -62,17 +53,16 @@ function Login() {
             underlineColor="transparent"
             onChangeText={(text) => setPassword(text)}
           />
+
           <View style={styles.floatRight}>
             <Link component={TouchableOpacity} to="/password/recover">
               <Caption>Forgot password?</Caption>
             </Link>
           </View>
         </View>
+
         <View>
-          <Button
-            style={styles.fixedBtn}
-            mode="contained"
-            onPress={() => login()}>
+          <Button style={styles.btn} mode="contained" onPress={() => login()}>
             Log in
           </Button>
           <Link component={TouchableOpacity} to="/register">
@@ -84,12 +74,33 @@ function Login() {
   );
 }
 
+const colors = {
+  primary: {color: '#6200ee'},
+  white: {color: '#fff'},
+};
+
 const styles = StyleSheet.create({
-  page,
-  flexContainer,
-  container,
-  input,
-  fixedBtn,
+  page: {
+    flex: 1,
+    flexDirection: 'column',
+    backgroundColor: '#fff',
+  },
+  flexContainer: {
+    flex: 1,
+    textAlign: 'center',
+    justifyContent: 'space-between',
+  },
+  container: {
+    padding: 15,
+  },
+  input: {
+    marginBottom: 10,
+    borderRadius: 5,
+  },
+  btn: {
+    marginLeft: 'auto',
+    marginRight: 'auto',
+  },
   color: colors.primary,
   text: {
     textAlign: 'center',

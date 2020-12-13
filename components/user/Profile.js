@@ -1,9 +1,11 @@
 import React, {useState, useEffect, useContext} from 'react';
 import {ScrollView, StyleSheet, View, Image} from 'react-native';
 import {Text, Chip, Caption} from 'react-native-paper';
-import LightHeader from '../layouts/LightHeader';
 import firestore from '@react-native-firebase/firestore';
+
+import {getUserById} from '../../api/user';
 import AppContext from '../../contexts/AppContext';
+import LightHeader from '../layouts/LightHeader';
 
 const MAX_LENGTH = 60;
 
@@ -11,23 +13,40 @@ function Profile() {
   const {user} = useContext(AppContext);
 
   const [show, setShow] = useState(false);
-  const [userinfo, setUserinfo] = useState({});
+  const [profile, setProfile] = useState({
+    name: '',
+    age: '',
+    tags: [],
+    status,
+  });
   const [status, setStatus] = useState({
-    text:
-      "I'm a frequent traveler, but not in the spontaneous sort of way. I love to plan my trips and go out on mini-adventures once I feel comfortable there. You can say I'm an organized free spirit. I love to try out new food, immerse myself in the beautiful culture of other places, and meet locals. I'm excited to meet you so we can plan our next adventure together!",
+    text: profile.status,
     show: false,
   });
 
   useEffect(() => {
-    firestore()
-      .collection('users')
-      .where('uid', '==', user.uid)
-      .get()
-      .then((doc) => {
-        setUserinfo(doc.docs[0].data());
+    getUserById(user.uid)
+      .then((usr) => {
+        setProfile({
+          name: usr.name,
+          age:
+            new Date().getFullYear() -
+            new Date(
+              new firestore.Timestamp(
+                parseInt(usr.birth.seconds, 10),
+                parseInt(usr.birth.nanoseconds, 10),
+              ).toMillis(),
+            ).getFullYear(),
+          tags: usr.tags,
+          picture: usr.picture,
+        });
+        setStatus({
+          text: usr.status,
+          show: false,
+        });
         setShow(true);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err, 'Profile useEffect error'));
   }, []);
 
   if (!show) {
@@ -42,13 +61,14 @@ function Profile() {
         <View>
           <Image
             source={{
-              uri:
-                'https://www.wallpaperup.com/uploads/wallpapers/2019/04/28/1321159/385b08992e91e605d2cb3d8b1aa0d8c4.jpg',
+              uri: profile.picture,
             }}
             style={styles.mainImg}
           />
           <View style={styles.userinfo}>
-            <Text style={styles.username}>{userinfo.email}, 21</Text>
+            <Text style={styles.username}>
+              {profile.name}, {profile.age}
+            </Text>
             <Text style={styles.location}>Ivano-Frankivsk, Ukraine</Text>
           </View>
         </View>
@@ -72,7 +92,7 @@ function Profile() {
           <View style={styles.mb}>
             <Text style={styles.sectionTitle}>Interests:</Text>
             <View style={styles.row}>
-              {userinfo.tags.map((e, i) => (
+              {profile.tags.map((e, i) => (
                 <Chip style={styles.mr} key={i} mode="outlined">
                   {e}
                 </Chip>
@@ -129,6 +149,7 @@ const styles = StyleSheet.create({
   mainImg: {
     width: '100%',
     aspectRatio: 3 / 4,
+    resizeMode: 'cover',
   },
   location: {
     fontSize: 13,

@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
 import {
   Button,
   Caption,
@@ -11,14 +10,8 @@ import {
 } from 'react-native-paper';
 import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Link, useHistory} from 'react-router-native';
-import {
-  fixedBtn,
-  input,
-  page,
-  flexContainer,
-  container,
-  colors,
-} from '../../styles/index';
+
+import {createUser} from '../../api/user';
 
 function Register() {
   const history = useHistory();
@@ -33,16 +26,9 @@ function Register() {
       auth()
         .createUserWithEmailAndPassword(email, password)
         .then(({user}) => {
-          firestore()
-            .collection('users')
-            .add({
-              email: user.email,
-              uid: user.uid,
-              complete: false,
-            })
-            .then(() => {
-              history.push('/setup');
-            });
+          createUser(user)
+            .then(() => history.push('/setup'))
+            .catch((err) => console.log(err, 'Register create error'));
         })
         .catch((err) => {
           if (err.code === 'auth/email-already-in-use') {
@@ -65,6 +51,7 @@ function Register() {
     <ScrollView contentContainerStyle={{...styles.page, ...styles.container}}>
       <View style={styles.flexContainer}>
         <Text style={{...styles.text, ...styles.color}}>lover</Text>
+
         <View>
           <Title style={styles.text}>Sign up</Title>
           {error.length > 0 && <Text style={styles.error}>{error}</Text>}
@@ -75,6 +62,7 @@ function Register() {
             value={email}
             onChangeText={(text) => setEmail(text)}
           />
+
           <TextInput
             style={styles.input}
             label="Password"
@@ -83,6 +71,7 @@ function Register() {
             value={password}
             onChangeText={(text) => setPassword(text)}
           />
+
           <View style={styles.checkbox}>
             <Checkbox
               status={check ? 'checked' : 'unchecked'}
@@ -94,6 +83,7 @@ function Register() {
             </Text>
           </View>
         </View>
+
         <View>
           <Button
             style={styles.btn}
@@ -110,17 +100,38 @@ function Register() {
   );
 }
 
+const colors = {
+  primary: {color: '#6200ee'},
+  white: {color: '#fff'},
+};
+
 const styles = StyleSheet.create({
-  page,
-  container,
-  flexContainer,
+  page: {
+    flex: 1,
+    flexDirection: 'column',
+    backgroundColor: '#fff',
+  },
+  flexContainer: {
+    flex: 1,
+    textAlign: 'center',
+    justifyContent: 'space-between',
+  },
+  container: {
+    padding: 15,
+  },
   text: {
     textAlign: 'center',
     paddingBottom: 10,
     paddingTop: 10,
   },
-  input,
-  fixedBtn,
+  input: {
+    marginBottom: 10,
+    borderRadius: 5,
+  },
+  btn: {
+    marginLeft: 'auto',
+    marginRight: 'auto',
+  },
   checkbox: {
     flexDirection: 'row',
     alignItems: 'center',
