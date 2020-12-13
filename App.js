@@ -16,6 +16,7 @@ import Setup from './components/user/Setup';
 import Main from './components/Main';
 import Profile from './components/user/Profile';
 import Nearby from './components/Nearby';
+import Liked from './components/Liked';
 
 import CreateRoom from './components/room/Create';
 
@@ -75,6 +76,8 @@ function App() {
                 <Route exact path="/chats" component={MainChat} />
                 <Route exact path="/chats/group" component={GroupChats} />
                 <Route exact path="/chats/unique" component={Correspondence} />
+                <Route exact path="/liked" component={Liked} />
+                <Route exact path="/chats" component={Chats} />
               </>
             )}
             {!user && (
