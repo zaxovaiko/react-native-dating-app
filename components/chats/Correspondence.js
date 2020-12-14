@@ -5,7 +5,7 @@ import {Appbar, Text, TextInput, Button, Caption} from 'react-native-paper';
 
 function Correspondence() {
     const history = useHistory();
-    const [email, setEmail] = useState('');
+    const [message, setMessage] = useState('');
 
     return (
         <View style={styles.scroll}>
@@ -40,12 +40,21 @@ function Correspondence() {
                 
             </ScrollView>
 
-            <View style={styles.container}>
-                <TextInput style={styles.input}>
+            <View style={styles.containerMessages}>
+                <TextInput
+                    style={styles.input}
+                    value={message}
+                    placeholder="Type your message..."
+                    underlineColorAndroid="rgba(0,0,0,0)"
+                    onChangeText={(text) => setMessage(text)} >
+                
                 </TextInput>
+                <TouchableOpacity>
+                    <Image source={require('../icons/ic_send.png')} style={styles.sendButton}></Image>
+                </TouchableOpacity>
+
             </View>
             
-
         </View>
         
     );
@@ -57,14 +66,27 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
     },
     input: {
-        borderRadius: 50,
+        flex: 1,
+    },
+    containerMessages: {
+        flexDirection: 'row',
+        width: '100%',
         height: 50,
+        backgroundColor: 'white',
+        alignItems: 'center',
+        paddingLeft: 20,
+        paddingRight: 10
     },
     container: {
         paddingLeft: 15,
         paddingRight: 15,
         paddingTop: 15,
         paddingBottom: 15,
+    },
+    sendButton: {
+        width: 35,
+        height: 35,
+        marginLeft: 10
     },
     page: {
         flex: 1,
