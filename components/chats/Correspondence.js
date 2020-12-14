@@ -47,12 +47,10 @@ function Correspondence() {
                     placeholder="Type your message..."
                     underlineColorAndroid="rgba(0,0,0,0)"
                     onChangeText={(text) => setMessage(text)} >
-                
                 </TextInput>
                 <TouchableOpacity>
                     <Image source={require('../icons/ic_send.png')} style={styles.sendButton}></Image>
                 </TouchableOpacity>
-
             </View>
             
         </View>
