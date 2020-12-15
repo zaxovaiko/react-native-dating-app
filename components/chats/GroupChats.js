@@ -79,54 +79,54 @@ function CreateGroupChats() {
 }
 
 const styles = StyleSheet.create({
-  scroll: {
-    flex: 1,
-    flexDirection: 'column',
-  },
-  container: {
-    paddingLeft: 15,
-    paddingRight: 15,
-    paddingTop: 15,
-    paddingBottom: 15,
-  },
-  page: {
-    flex: 1,
-    flexDirection: 'column',
-  },
-  chatRows: {
-    flexDirection: 'row',
-  },
-  chatImg: {
-    width: '95%',
-    height: 70,
-    marginLeft: 9,
-    marginBottom: 15,
-    borderColor: '#000',
-  },
-  chatView: {
-    top: -60,
-    left: 80,
-    width: '75%',
-    height: 20,
-    flexDirection: 'row',
-  },
-  chatText0: {
-    top: 12,
-    height: 50,
-    width: 250,
-  },
-  chatText3: {
-    marginLeft: 'auto',
-  },
-  FlexStyle: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-  },
-  peopleIcon: {
-    width: 70,
-    borderRadius: 150,
-    height: 70,
-  },
+    scroll: {
+        flex: 1,
+        flexDirection: 'column',
+    },
+    container: {
+        paddingLeft: 15,
+        paddingRight: 15,
+        paddingTop: 15,
+        paddingBottom: 15,
+    },
+    page: {
+        flex: 1,
+        flexDirection: 'column',
+    },
+    chatRows: {
+        flexDirection: 'row',
+    },
+    chatImg: {
+        width: '95%',
+        height: 70,
+        marginLeft: 9,
+        marginBottom: 15,
+        borderColor: '#000',
+    },
+    chatView: {
+        top: -60,
+        left: 80,
+        width: '75%',
+        height: 20,
+        flexDirection: 'row'
+    },
+    chatText0: {
+        top: 12,
+        height: 50,
+        width: 250
+    },
+    chatText3: {
+        marginLeft: 'auto'
+    },
+    FlexStyle: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+    },
+    peopleIcon: {
+        width: 70,
+        borderRadius: 150,
+        height: 70,
+    },
 });
 
 export default CreateGroupChats;

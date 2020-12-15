@@ -71,13 +71,12 @@ function App() {
                 <Route exact path="/setup" component={Setup} />
                 <Route exact path="/settings" component={Settings} />
                 <Route exact path="/password/change" component={PassChange} />
-                <Route exact path="/rooms" component={Groups} />
-                <Route exact path="/rooms/create" component={CreateRoom} />
+                <Route exact path="/chats/groups" component={Groups} />
+                <Route exact path="/room/create" component={CreateRoom} />
                 <Route exact path="/chats" component={MainChat} />
                 <Route exact path="/chats/group" component={GroupChats} />
                 <Route exact path="/chats/unique" component={Correspondence} />
                 <Route exact path="/liked" component={Liked} />
-                <Route exact path="/chats" component={Chats} />
               </>
             )}
             {!user && (
