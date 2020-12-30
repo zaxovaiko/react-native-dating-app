@@ -12,86 +12,74 @@ import {
 } from 'react-native-paper';
 import {Picker} from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import firestore from '@react-native-firebase/firestore';
 import GetLocation from 'react-native-get-location';
-import geohash from 'ngeohash';
 import gravatar from 'gravatar';
+import * as geofire from 'geofire-common';
 
+import setupStyles from '../../styles/auth/setup';
 import AppContext from '../../contexts/AppContext';
 import LightHeader from '../layouts/LightHeader';
-import {getUserById, updateUserById} from '../../api/user';
+import {getUserById, updateUserById} from '../../api/user.api';
 import {getTagByName} from '../../api/tags';
+import {getAgeFromDate} from '../../helpers/date.helper';
+import {isName} from '../../validators/user.validator';
+
+const styles = StyleSheet.create(setupStyles);
+const gravatarPicOptions = {
+  s: '550',
+  r: 'x',
+  d: 'identicon',
+};
 
 function Setup() {
   const history = useHistory();
-  const {user, setComplete} = useContext(AppContext);
+  const {user, setComplete, complete} = useContext(AppContext);
 
+  const [init, setInit] = useState(true);
+  const [error, setError] = useState([]);
+  const [tag, setTag] = useState('');
+  const [date, setDate] = useState(Date.now());
   const [showTagModal, setShowTagModal] = useState(false);
   const [choosedTags, setChoosedTags] = useState([]);
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [error, setError] = useState([]);
-  const [tag, setTag] = useState('');
-
-  const [name, setName] = useState('');
-  const [picture, setPicture] = useState(
-    'https://via.placeholder.com/1000.jpg',
-  );
-  const [status, setStatus] = useState('');
-  const [minAge, setMinAge] = useState('18');
-  const [date, setDate] = useState(Date.now());
-  const [gender, setGender] = useState('Gender');
-  const [interestedIn, setInterestedIn] = useState('Interested in');
-  const [tags, setTags] = useState([]);
-  const [location, setLocation] = useState({
-    longitude: '',
-    latitude: '',
-    geohash: '',
+  const [userinfo, setUserinfo] = useState({
+    uid: user.uid,
+    name: '',
+    picture: gravatar.url(user.email, gravatarPicOptions, 'https'),
+    tags: [],
+    status: '',
+    age: 0,
+    minAge: 18,
+    gender: 0,
+    interestedIn: 1,
+    location: {longitute: 0, latitude: 0, geohash: ''},
   });
 
   useEffect(() => {
+    setInit(false);
     let isMounted = true;
 
-    GetLocation.getCurrentPosition({
-      enableHighAccuracy: true,
-      timeout: 15000,
-    })
-      .then((loc) => {
-        const {longitude, latitude} = loc;
-        if (isMounted) {
-          setLocation({
-            latitude,
-            longitude,
-            geohash: geohash.encode(latitude, longitude),
-          });
-        }
-      })
-      .catch((err) => {
-        const {code, message} = err;
-        console.warn(code, message);
-        console.log('Setup useEffect error');
-      });
-
     getUserById(user.uid)
-      .then((usr) => {
+      .then((loggedUser) => {
         if (isMounted) {
-          const dt = new Date(
-            new firestore.Timestamp(
-              parseInt(usr.birth.seconds, 10),
-              parseInt(usr.birth.nanoseconds, 10),
-            ).toMillis(),
-          );
+          GetLocation.getCurrentPosition({
+            enableHighAccuracy: true,
+            timeout: 10000,
+          })
+            .then(({longitude, latitude}) =>
+              setUserinfo((p) => ({...p, location: {longitude, latitude}})),
+            )
+            .catch((err) => console.error(err, 'Setup useEffect error'));
+        }
 
-          setName(usr.name);
-          setStatus(usr.status);
-          setDate(dt);
-          setMinAge(usr.minAge);
-          setInterestedIn(usr.interestedIn);
-          setTags(usr.tags);
-          setGender(usr.gender);
-          setPicture(usr.picture);
+        if (loggedUser.complete && isMounted) {
+          setUserinfo(loggedUser);
+          setDate(
+            new Date(new Date(Date.now()).getFullYear() - loggedUser.age, 1),
+          );
         }
       })
-      .catch((err) => console.log(err, 'Setup useEffect error'));
+      .catch((err) => console.error(err, 'Setup useEffect error'));
 
     return () => {
       isMounted = false;
@@ -100,50 +88,46 @@ function Setup() {
 
   function onChangeDate(e, selectedDate) {
     setDate(selectedDate || date);
+    setUserinfo((p) => ({
+      ...p,
+      age: getAgeFromDate(new Date(selectedDate || date)),
+    }));
     setShowDatePicker(false);
   }
 
   function saveProfileInfo() {
     setError([]);
 
-    if (name.length > 20 || name.length < 3) {
+    if (!isName(userinfo.name)) {
       return setError((p) => [
-        ...new Set([...p, 'Name length must be in range 3, 20']),
+        ...new Set([...p, 'Use A-z for a name with length in range 3-20']),
       ]);
     }
 
-    const dateObj = new Date(date);
-    if (
-      new Date(
-        dateObj.getFullYear() + 18,
-        dateObj.getMonth() - 1,
-        dateObj.getDay(),
-      ) > new Date()
-    ) {
+    if (+userinfo.minAge < 18) {
       return setError((p) => [
-        ...new Set([...p, 'You can not be younger than 18 yo']),
+        ...new Set([...p, 'Min age must be a number greater than 18']),
       ]);
     }
 
-    updateUserById(user.uid, {
-      gender,
-      status,
-      interestedIn,
-      minAge,
-      tags,
-      birth: date,
+    if (userinfo.age < 18) {
+      return setError((p) => [
+        ...new Set([...p, 'You must be older than 18 yo']),
+      ]);
+    }
+
+    updateUserById({
+      ...userinfo,
       complete: true,
-      name,
-      location,
-      picture: gravatar.url(
-        user.email,
-        {
-          s: '350',
-          r: 'x',
-          d: 'identicon',
-        },
-        true,
-      ),
+      minAge: +userinfo.minAge,
+      location: {
+        ...userinfo.location,
+        geohash: geofire.geohashForLocation([
+          parseFloat(userinfo.location.latitude),
+          parseFloat(userinfo.location.longitude),
+        ]),
+      },
+      picture: gravatar.url(user.email, gravatarPicOptions, 'https'),
     })
       .then(() => {
         setComplete(true);
@@ -156,21 +140,29 @@ function Setup() {
     setTag(text);
     if (text.length > 1) {
       getTagByName(text)
-        .then((docs) => setChoosedTags(docs.docs.map((e) => e.data())))
-        .catch((err) => console.log(err, 'Setup getTagByName error'));
+        .then((tags) => setChoosedTags(tags))
+        .catch((err) => console.error(err, 'Setup getTagByName error'));
     }
   }
 
   function addToTags(tg) {
-    if (tags.indexOf(tg) !== -1) {
+    if (userinfo.tags.indexOf(tg) !== -1) {
       return;
     }
-    setTags((p) => [...p, tg]);
+    setChoosedTags((p) => p.filter((e) => e.name !== tg));
+    setUserinfo((p) => ({...p, tags: [...p.tags, tg]}));
+  }
+
+  if (init) {
+    return null;
   }
 
   return (
     <ScrollView style={styles.page}>
-      <LightHeader title="Set up profile" />
+      <LightHeader
+        title="Set up profile"
+        redirect={!user || (user && !complete) ? '/login' : null}
+      />
 
       <Portal>
         <Dialog
@@ -221,12 +213,7 @@ function Setup() {
           ...styles.fixes,
         }}>
         <View>
-          <Image
-            style={styles.avatar}
-            source={{
-              uri: picture,
-            }}
-          />
+          <Image style={styles.avatar} source={{uri: userinfo.picture}} />
         </View>
 
         <View style={styles.row}>
@@ -234,9 +221,9 @@ function Setup() {
             style={styles.w100}
             mode="flat"
             label="Name"
-            value={name}
+            value={userinfo.name}
             underlineColor="transparent"
-            onChangeText={(text) => setName(text)}
+            onChangeText={(name) => setUserinfo((p) => ({...p, name}))}
           />
         </View>
 
@@ -246,9 +233,9 @@ function Setup() {
             mode="flat"
             label="Status"
             multiline={true}
-            value={status}
+            value={userinfo.status}
             underlineColor="transparent"
-            onChangeText={(text) => setStatus(text)}
+            onChangeText={(status) => setUserinfo((p) => ({...p, status}))}
           />
         </View>
 
@@ -265,26 +252,28 @@ function Setup() {
         <View style={styles.row}>
           <Paragraph style={styles.rowTitle}>Gender</Paragraph>
           <Picker
-            selectedValue={gender}
+            selectedValue={userinfo.gender}
             style={styles.picker}
             mode="dialog"
-            onValueChange={(v) => setGender(v)}>
-            <Picker.Item label="Male" value="male" />
-            <Picker.Item label="Female" value="female" />
-            <Picker.Item label="Other" value="other" />
+            onValueChange={(gender) => setUserinfo((p) => ({...p, gender}))}>
+            <Picker.Item label="Male" value={0} />
+            <Picker.Item label="Female" value={1} />
+            <Picker.Item label="Other" value={2} />
           </Picker>
         </View>
 
         <View style={styles.row}>
           <Paragraph style={styles.rowTitle}>Interested in</Paragraph>
           <Picker
-            selectedValue={interestedIn}
+            selectedValue={userinfo.interestedIn}
             style={styles.picker}
             mode="dialog"
-            onValueChange={(v) => setInterestedIn(v)}>
-            <Picker.Item label="Women" value="women" />
-            <Picker.Item label="Men" value="men" />
-            <Picker.Item label="Both" value="both" />
+            onValueChange={(interestedIn) =>
+              setUserinfo((p) => ({...p, interestedIn}))
+            }>
+            <Picker.Item label="Women" value={1} />
+            <Picker.Item label="Men" value={0} />
+            <Picker.Item label="Both" value={2} />
           </Picker>
         </View>
 
@@ -294,10 +283,10 @@ function Setup() {
             style={styles.numericInput}
             mode="flat"
             keyboardType="numeric"
-            value={minAge}
+            value={String(userinfo.minAge)}
             underlineColor="transparent"
             maxLength={2}
-            onChangeText={(text) => setMinAge(text.replace(/(^0|[^0-9]+)/, ''))}
+            onChangeText={(minAge) => setUserinfo((p) => ({...p, minAge}))}
           />
         </View>
 
@@ -306,12 +295,17 @@ function Setup() {
             Tags
           </Paragraph>
           <View style={styles.row}>
-            {tags.map((tg, i) => (
+            {userinfo.tags.map((tg, i) => (
               <Chip
                 key={i}
                 mode="outlined"
                 style={styles.chips}
-                onPress={() => setTags((p) => p.filter((_, idx) => idx !== i))}>
+                onPress={() =>
+                  setUserinfo((p) => ({
+                    ...p,
+                    tags: p.tags.filter((e) => e !== tg),
+                  }))
+                }>
                 {tg}
               </Chip>
             ))}
@@ -338,80 +332,5 @@ function Setup() {
     </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  page: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  findTag: {
-    borderRadius: 5,
-    marginBottom: 10,
-  },
-  w100: {
-    width: '100%',
-  },
-  numericInput: {
-    width: 45,
-    marginLeft: 'auto',
-    borderRadius: 5,
-  },
-  error: {
-    color: 'red',
-    textAlign: 'center',
-    marginBottom: 10,
-  },
-  picker: {
-    height: 40,
-    width: 120,
-    marginLeft: 'auto',
-    fontSize: 10,
-    textAlign: 'right',
-  },
-  flexContainer: {
-    flex: 1,
-    textAlign: 'center',
-    justifyContent: 'space-between',
-  },
-  container: {
-    padding: 15,
-  },
-  fixedBtn: {
-    marginHorizontal: 'auto',
-  },
-  fixes: {
-    justifyContent: 'flex-start',
-  },
-  row: {
-    marginBottom: 20,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    alignItems: 'center',
-  },
-  rowTitle: {
-    fontWeight: '700',
-    color: '#000',
-  },
-  mr: {
-    marginLeft: 'auto',
-  },
-  chips: {
-    marginBottom: 10,
-    marginRight: 5,
-  },
-  slider: {
-    height: 10,
-    marginLeft: -15,
-    marginRight: -15,
-  },
-  avatar: {
-    width: 250,
-    height: 250,
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    marginBottom: 30,
-    borderRadius: 500,
-  },
-});
 
 export default Setup;

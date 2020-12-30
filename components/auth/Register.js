@@ -11,7 +11,7 @@ import {
 import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Link, useHistory} from 'react-router-native';
 
-import {createUser} from '../../api/user';
+import {createUser} from '../../api/user.api';
 
 function Register() {
   const history = useHistory();

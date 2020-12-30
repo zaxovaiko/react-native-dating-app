@@ -1,21 +1,23 @@
 import React, {useState, useEffect, useContext} from 'react';
 import {ScrollView, StyleSheet, View, Image} from 'react-native';
 import {Text, Chip, Caption} from 'react-native-paper';
-import firestore from '@react-native-firebase/firestore';
 
-import {getUserById} from '../../api/user';
+import profileStyles from '../../styles/profile';
+import {getUserById} from '../../api/user.api';
 import AppContext from '../../contexts/AppContext';
 import LightHeader from '../layouts/LightHeader';
 
 const MAX_LENGTH = 60;
 
+const styles = StyleSheet.create(profileStyles);
+
 function Profile() {
   const {user} = useContext(AppContext);
 
-  const [show, setShow] = useState(false);
+  const [init, setInit] = useState(true);
   const [profile, setProfile] = useState({
     name: '',
-    age: '',
+    age: 0,
     tags: [],
     status,
   });
@@ -27,29 +29,17 @@ function Profile() {
   useEffect(() => {
     getUserById(user.uid)
       .then((usr) => {
-        setProfile({
-          name: usr.name,
-          age:
-            new Date().getFullYear() -
-            new Date(
-              new firestore.Timestamp(
-                parseInt(usr.birth.seconds, 10),
-                parseInt(usr.birth.nanoseconds, 10),
-              ).toMillis(),
-            ).getFullYear(),
-          tags: usr.tags,
-          picture: usr.picture,
-        });
+        setProfile(usr);
         setStatus({
           text: usr.status,
           show: false,
         });
-        setShow(true);
+        setInit(false);
       })
       .catch((err) => console.log(err, 'Profile useEffect error'));
   }, []);
 
-  if (!show) {
+  if (init) {
     return null;
   }
 
@@ -69,7 +59,9 @@ function Profile() {
             <Text style={styles.username}>
               {profile.name}, {profile.age}
             </Text>
-            <Text style={styles.location}>Ivano-Frankivsk, Ukraine</Text>
+            <Text style={styles.location}>
+              {profile.location.latitude} {profile.location.longitude}
+            </Text>
           </View>
         </View>
 
@@ -122,63 +114,5 @@ function Profile() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  row: {
-    flexDirection: 'row',
-  },
-  mb: {
-    marginBottom: 10,
-  },
-  mr: {
-    marginRight: 5,
-  },
-  sectionTitle: {
-    fontWeight: '700',
-    marginBottom: 5,
-    color: '#777',
-  },
-  page: {
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-  },
-  mainImg: {
-    width: '100%',
-    aspectRatio: 3 / 4,
-    resizeMode: 'cover',
-  },
-  location: {
-    fontSize: 13,
-    color: '#fff',
-  },
-  userinfo: {
-    position: 'absolute',
-    bottom: 0,
-    padding: 15,
-    width: '100%',
-    backgroundColor: 'rgba(0, 0, 0, .65)',
-  },
-  username: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#fff',
-  },
-  igImageWrapper: {
-    width: '25%',
-    paddingHorizontal: 5,
-  },
-  igImages: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  igImage: {
-    width: '100%',
-    aspectRatio: 1,
-  },
-});
 
 export default Profile;
