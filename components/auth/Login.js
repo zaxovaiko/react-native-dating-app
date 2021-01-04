@@ -8,7 +8,7 @@ function Login() {
   const history = useHistory();
   const [email, setEmail] = useState('zaxovaiko@gmail.com');
   const [password, setPassword] = useState('password');
-  const [error, setError] = useState({error: false, msg: ''});
+  const [error, setError] = useState('');
 
   function login() {
     auth()
@@ -16,15 +16,15 @@ function Login() {
       .then(() => history.push('/'))
       .catch((err) => {
         if (err.code === 'auth/user-not-found') {
-          setError({error: true, msg: 'User was not found.'});
+          setError('User was not found.');
         }
 
         if (err.code === 'auth/wrong-password') {
-          setError({error: true, msg: 'Wrong password.'});
+          setError('Wrong password.');
         }
 
         if (err.code === 'auth/invalid-email') {
-          setError({error: true, msg: 'Invalid email.'});
+          setError('Invalid email.');
         }
       });
   }
@@ -36,7 +36,7 @@ function Login() {
 
         <View>
           <Title style={styles.text}>Log in</Title>
-          {error.error && <Text style={styles.error}>{error.msg}</Text>}
+          {error.length > 0 && <Text style={styles.error}>{error}</Text>}
 
           <TextInput
             style={styles.input}

@@ -1,5 +1,5 @@
 import firestore from '@react-native-firebase/firestore';
-import locationHelper from '../helpers/location.helper';
+import locationHelper from '../helpers/location';
 
 export function getNearbyUsers(location, distance = 60) {
   const {lower, upper} = locationHelper(location, distance);

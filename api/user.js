@@ -1,5 +1,5 @@
 import firestore from '@react-native-firebase/firestore';
-import locationHelper from '../helpers/location.helper';
+import locationHelper from '../helpers/location';
 
 // Get entire document by user id from users collection
 function getInfoByUserId(uid) {

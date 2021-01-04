@@ -1,6 +1,13 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {ScrollView, StyleSheet, View, Image} from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  View,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
 import {Text} from 'react-native-paper';
+import {Link} from 'react-router-native';
 import GetLocation from 'react-native-get-location';
 import distance from 'gps-distance';
 
@@ -15,7 +22,7 @@ function Nearby() {
   const {user} = useContext(AppContext);
   const [location, setLocation] = useState({});
   const [users, setUsers] = useState([]);
-  const [show, setShow] = useState(false);
+  const [init, setInit] = useState(true);
 
   useEffect(() => {
     let isMounted = true;
@@ -28,23 +35,19 @@ function Nearby() {
         if (isMounted) {
           setLocation(loc);
           getNearbyUsers(loc)
-            .then((res) => {
-              setUsers(res.filter((e) => e.email !== user.email));
-            })
+            .then((res) => setUsers(res.filter((e) => e.email !== user.email)))
             .catch((err) => console.log(err, 'Nearby useEffect error'))
-            .then(() => setShow(true));
+            .then(() => setInit(false));
         }
       })
-      .catch((err) => {
-        console.warn(err);
-      });
+      .catch((err) => console.warn(err));
 
     return () => {
       isMounted = false;
     };
   }, []);
 
-  if (!show) {
+  if (init) {
     return null;
   }
 
@@ -55,18 +58,22 @@ function Nearby() {
 
         <View style={styles.images}>
           {users.map((usr, i) => (
-            <View key={i} style={styles.imageBlock}>
-              <Image source={{uri: usr.picture}} style={styles.image} />
-              <Text style={styles.distance}>
-                {distance(
-                  location.latitude,
-                  location.longitude,
-                  usr.location.latitude,
-                  usr.location.longitude,
-                ).toFixed(2)}{' '}
-                km
-              </Text>
-            </View>
+            <TouchableOpacity key={i} style={styles.imageBlock}>
+              <Link to={`/profile/${usr.uid}`}>
+                <>
+                  <Image source={{uri: usr.picture}} style={styles.image} />
+                  <Text style={styles.distance}>
+                    {distance(
+                      location.latitude,
+                      location.longitude,
+                      usr.location.latitude,
+                      usr.location.longitude,
+                    ).toFixed(2)}{' '}
+                    km
+                  </Text>
+                </>
+              </Link>
+            </TouchableOpacity>
           ))}
         </View>
       </ScrollView>

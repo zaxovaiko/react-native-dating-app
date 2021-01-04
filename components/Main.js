@@ -14,20 +14,21 @@ import {
 import {faStar as frStar} from '@fortawesome/free-regular-svg-icons';
 
 import mainStyles from '../styles/main';
-import {getUserFilteredByLocation, getUserById} from '../api/user.api';
+import {getUserFilteredByLocation, getUserById} from '../api/user';
 import AppContext from '../contexts/AppContext';
 
 const styles = StyleSheet.create(mainStyles);
-const icons = [
-  {icon: faCog, link: '/settings'},
-  {icon: faUserCircle, link: '/profile'},
-  {icon: faMapMarkerAlt, link: '/nearby'},
-  {icon: faHeart, link: '/liked'},
-  {icon: faComments, link: '/chats'},
-];
 
 function Main() {
   const {user} = useContext(AppContext);
+
+  const icons = [
+    {icon: faCog, link: '/settings'},
+    {icon: faUserCircle, link: `/profile/${user.uid}`},
+    {icon: faMapMarkerAlt, link: '/nearby'},
+    {icon: faHeart, link: '/liked'},
+    {icon: faComments, link: '/chats'},
+  ];
 
   const [init, setInit] = useState(true);
   const [currentUser, setCurrentUser] = useState();

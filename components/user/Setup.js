@@ -19,10 +19,10 @@ import * as geofire from 'geofire-common';
 import setupStyles from '../../styles/auth/setup';
 import AppContext from '../../contexts/AppContext';
 import LightHeader from '../layouts/LightHeader';
-import {getUserById, updateUserById} from '../../api/user.api';
+import {getUserById, updateUserById} from '../../api/user';
 import {getTagByName} from '../../api/tags';
-import {getAgeFromDate} from '../../helpers/date.helper';
-import {isName} from '../../validators/user.validator';
+import {getAgeFromDate} from '../../helpers/date';
+import {isName} from '../../validators/user';
 
 const styles = StyleSheet.create(setupStyles);
 const gravatarPicOptions = {

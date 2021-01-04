@@ -3,7 +3,7 @@ import {ScrollView, StyleSheet, View, Image} from 'react-native';
 import {Text, Chip, Caption} from 'react-native-paper';
 
 import profileStyles from '../../styles/profile';
-import {getUserById} from '../../api/user.api';
+import {getUserById} from '../../api/user';
 import AppContext from '../../contexts/AppContext';
 import LightHeader from '../layouts/LightHeader';
 
@@ -11,7 +11,7 @@ const MAX_LENGTH = 60;
 
 const styles = StyleSheet.create(profileStyles);
 
-function Profile() {
+function Profile({match}) {
   const {user} = useContext(AppContext);
 
   const [init, setInit] = useState(true);
@@ -27,7 +27,7 @@ function Profile() {
   });
 
   useEffect(() => {
-    getUserById(user.uid)
+    getUserById(match.params.uid)
       .then((usr) => {
         setProfile(usr);
         setStatus({
@@ -49,12 +49,7 @@ function Profile() {
         <LightHeader title="Profile" />
 
         <View>
-          <Image
-            source={{
-              uri: profile.picture,
-            }}
-            style={styles.mainImg}
-          />
+          <Image source={{uri: profile.picture}} style={styles.mainImg} />
           <View style={styles.userinfo}>
             <Text style={styles.username}>
               {profile.name}, {profile.age}

@@ -1,7 +1,9 @@
 import React, {useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Button, Caption, TextInput, Text} from 'react-native-paper';
-import {scroll, page, container, input, btn} from '../../../styles/index';
+import auth from '@react-native-firebase/auth';
+
+import changeStyles from '../../../styles/auth/change';
 import LightHeader from '../../layouts/LightHeader';
 
 const inputs = [
@@ -10,8 +12,11 @@ const inputs = [
   {label: 'Repeat password', key: 'repeat'},
 ];
 
+const styles = StyleSheet.create(changeStyles);
+
 function Change() {
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [passwords, setPasswords] = useState({
     old: '',
     new: '',
@@ -19,6 +24,9 @@ function Change() {
   });
 
   function sendConfirmationLink() {
+    setError('');
+    setSuccess('');
+
     if (!passwords.old || !passwords.repeat || !passwords.new) {
       return setError('Input data can not be empty.');
     }
@@ -31,7 +39,20 @@ function Change() {
       return setError('Passwords are not equal.');
     }
 
-    // else send confirmation link
+    const user = auth().currentUser;
+    const credential = auth.EmailAuthProvider.credential(
+      user.email,
+      passwords.old,
+    );
+
+    user
+      .reauthenticateWithCredential(credential)
+      .then(() =>
+        user
+          .updatePassword(passwords.new)
+          .then(() => setSuccess('Password was chagned.')),
+      )
+      .catch((err) => setError(err.message.replace(/\[.*\]\s/gi, '')));
   }
 
   return (
@@ -51,7 +72,10 @@ function Change() {
             onChangeText={(text) => setPasswords((p) => ({...p, [key]: text}))}
           />
         ))}
-        <Text style={styles.error}>{error}</Text>
+
+        {error.length > 0 && <Text style={styles.error}>{error}</Text>}
+        {success.length > 0 && <Text style={styles.success}>{success}</Text>}
+
         <Button
           style={styles.btnBottom}
           mode="contained"
@@ -62,19 +86,5 @@ function Change() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  scroll,
-  container,
-  page,
-  input,
-  btnBottom: {
-    ...btn,
-    marginTop: 'auto',
-  },
-  error: {
-    color: 'red',
-  },
-});
 
 export default Change;

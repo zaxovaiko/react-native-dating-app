@@ -4,7 +4,7 @@ import {Provider as PaperProvider} from 'react-native-paper';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import auth from '@react-native-firebase/auth';
 
-import {getUserById} from './api/user.api';
+import {getUserById} from './api/user';
 import AppContext from './contexts/AppContext';
 import Login from './components/auth/Login';
 import Register from './components/auth/Register';
@@ -13,14 +13,12 @@ import PassChange from './components/auth/password/Change';
 import Settings from './components/user/Settings';
 import Setup from './components/user/Setup';
 import Main from './components/Main';
+import Chats from './components/chats/Chats';
+import Chat from './components/chats/Chat';
 import Profile from './components/user/Profile';
 import Nearby from './components/Nearby';
 import Liked from './components/Liked';
 import CreateRoom from './components/room/Create';
-import Groups from './components/chats/Groups';
-import MainChat from './components/chats/MainChats';
-import GroupChats from './components/chats/GroupChats';
-import Correspondence from './components/chats/Correspondence';
 
 function App() {
   const [init, setInit] = useState(true);
@@ -58,21 +56,16 @@ function App() {
               {user && complete && (
                 <>
                   <Route exact path="/" component={Main} />
-                  <Route exact path="/profile" component={Profile} />
+                  <Route exact path="/profile/:uid" component={Profile} />
                   <Route exact path="/nearby" component={Nearby} />
                   <Route exact path="/setup" component={Setup} />
                   <Route exact path="/settings" component={Settings} />
                   <Route exact path="/password/change" component={PassChange} />
-                  <Route exact path="/rooms" component={Groups} />
                   <Route exact path="/rooms/create" component={CreateRoom} />
-                  <Route exact path="/chats" component={MainChat} />
-                  <Route exact path="/chats/group" component={GroupChats} />
-                  <Route
-                    exact
-                    path="/chats/unique"
-                    component={Correspondence}
-                  />
                   <Route exact path="/liked" component={Liked} />
+                  <Route exact path="/chats" component={Chats} />
+                  <Route exact path="/chats/u" component={Chat} />
+                  <Route exact path="/groups" component={Chat} />
                 </>
               )}
               {(!user || (user && !complete)) && (
