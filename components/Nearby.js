@@ -1,16 +1,28 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {ScrollView, StyleSheet, View, Image} from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  View,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
 import {Text} from 'react-native-paper';
+import {Link} from 'react-router-native';
 import GetLocation from 'react-native-get-location';
+import distance from 'gps-distance';
 
+import nearbyStyles from '../styles/nearby';
 import LightHeader from './layouts/LightHeader';
 import {getNearbyUsers} from '../api/location';
 import AppContext from '../contexts/AppContext';
 
+const styles = StyleSheet.create(nearbyStyles);
+
 function Nearby() {
   const {user} = useContext(AppContext);
+  const [location, setLocation] = useState({});
   const [users, setUsers] = useState([]);
-  const [show, setShow] = useState(false);
+  const [init, setInit] = useState(true);
 
   useEffect(() => {
     let isMounted = true;
@@ -21,26 +33,21 @@ function Nearby() {
     })
       .then((loc) => {
         if (isMounted) {
+          setLocation(loc);
           getNearbyUsers(loc)
-            .then((res) => {
-              setUsers(res.filter((e) => e.email !== user.email));
-              setShow(true);
-            })
-            .catch((err) => console.log(err, 'Nearby useEffect error'));
+            .then((res) => setUsers(res.filter((e) => e.email !== user.email)))
+            .catch((err) => console.log(err, 'Nearby useEffect error'))
+            .then(() => setInit(false));
         }
       })
-      .catch((err) => {
-        const {code, message} = err;
-        console.warn(code, message);
-        console.log('Setup useEffect error');
-      });
+      .catch((err) => console.warn(err));
 
     return () => {
       isMounted = false;
     };
   }, []);
 
-  if (!show) {
+  if (init) {
     return null;
   }
 
@@ -51,53 +58,27 @@ function Nearby() {
 
         <View style={styles.images}>
           {users.map((usr, i) => (
-            <View key={i} style={styles.imageBlock}>
-              <Image
-                source={{
-                  uri: usr.picture,
-                }}
-                style={styles.image}
-              />
-              <Text style={styles.distance}>{i + 10} km</Text>
-            </View>
+            <TouchableOpacity key={i} style={styles.imageBlock}>
+              <Link to={`/profile/${usr.uid}`}>
+                <>
+                  <Image source={{uri: usr.picture}} style={styles.image} />
+                  <Text style={styles.distance}>
+                    {distance(
+                      location.latitude,
+                      location.longitude,
+                      usr.location.latitude,
+                      usr.location.longitude,
+                    ).toFixed(2)}{' '}
+                    km
+                  </Text>
+                </>
+              </Link>
+            </TouchableOpacity>
           ))}
         </View>
       </ScrollView>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: 'column',
-    backgroundColor: '#fff',
-  },
-  images: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexWrap: 'wrap',
-  },
-  imageBlock: {
-    width: '33.3%',
-    padding: 10,
-  },
-  image: {
-    width: '100%',
-    aspectRatio: 1,
-    borderRadius: 300,
-  },
-  distance: {
-    position: 'absolute',
-    bottom: 0,
-    right: 10,
-    backgroundColor: '#fff',
-    paddingHorizontal: 5,
-    borderRadius: 100,
-    borderWidth: 1,
-    borderColor: '#ddd',
-  },
-});
 
 export default Nearby;

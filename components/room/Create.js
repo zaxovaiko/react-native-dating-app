@@ -1,6 +1,13 @@
 import React, {useState} from 'react';
 import {StyleSheet, View} from 'react-native';
-import {Button, Text, TextInput, Chip, Portal, Dialog} from 'react-native-paper';
+import {
+  Button,
+  Text,
+  TextInput,
+  Chip,
+  Portal,
+  Dialog,
+} from 'react-native-paper';
 import {
   input,
   page,
@@ -41,12 +48,6 @@ function Create() {
     }
     setTags((p) => [...p, tg]);
   }
-
-  function create(){
-    createRoom(roomName, roomTopic, tags)
-      .then(() => history.push('/'))
-  }
-
 
   return (
     <View style={{...styles.page, ...styles.bg}}>
@@ -107,22 +108,24 @@ function Create() {
             <Text style={{fontWeight: 'bold', marginBottom: 5, marginLeft: 5}}>
               Interests
             </Text>
-            
+
             <View style={styles.row}>
               {tags.map((tg, i) => (
                 <Chip
                   key={i}
                   mode="outlined"
                   style={styles.chips}
-                  onPress={() => setTags((p) => p.filter((_, idx) => idx !== i))}>
+                  onPress={() =>
+                    setTags((p) => p.filter((_, idx) => idx !== i))
+                  }>
                   {tg}
                 </Chip>
               ))}
               <Chip
-              mode="outlined"
-              style={styles.chips}
-              onPress={() => setShowTagModal(true)}>
-              +
+                mode="outlined"
+                style={styles.chips}
+                onPress={() => setShowTagModal(true)}>
+                +
               </Chip>
             </View>
           </View>

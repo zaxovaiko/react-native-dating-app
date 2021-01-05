@@ -1,63 +1,58 @@
 import React, {useState} from 'react';
 import {StyleSheet, View} from 'react-native';
-import {Button, Caption, TextInput} from 'react-native-paper';
-import LightHeader from '../../layouts/LightHeader';
+import {Button, Caption, TextInput, Text} from 'react-native-paper';
+import auth from '@react-native-firebase/auth';
+import validator from 'validator';
 
-const inputs = [
-  {label: 'New password', key: 'new'},
-  {label: 'Repeat password', key: 'repeat'},
-];
+import LightHeader from '../../layouts/LightHeader';
+import recoverStyles from '../../../styles/auth/recover';
+
+const styles = StyleSheet.create(recoverStyles);
 
 function Recover() {
-  const [passwords, setPasswords] = useState({
-    new: '',
-    repeat: '',
-  });
+  const [email, setEmail] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+
+  function resetPassword() {
+    setError('');
+    setSuccess('');
+
+    if (!validator.isEmail(email || '')) {
+      return setError('Email is invalid');
+    }
+
+    auth()
+      .sendPasswordResetEmail(email)
+      .then(() => setSuccess('Please, check your email'))
+      .catch((err) => setError(err.message.replace(/\[.*\]\s/gi, '')));
+  }
 
   return (
     <View style={styles.page}>
       <LightHeader title="Password recover" />
+
       <View style={{...styles.container, ...styles.flexContainer}}>
         <Caption>You will get email with confirmation link.</Caption>
-        {inputs.map(({label, key}, i) => (
-          <TextInput
-            key={i}
-            style={styles.input}
-            label={label}
-            secureTextEntry={true}
-            value={passwords[key]}
-            underlineColor="transparent"
-            onChangeText={(text) => setPasswords((p) => ({...p, [key]: text}))}
-          />
-        ))}
-        <Button style={styles.btn} mode="contained" onPress={() => {}}>
+        <TextInput
+          style={styles.input}
+          label={'Email'}
+          value={email}
+          underlineColor="transparent"
+          onChangeText={(v) => setEmail(v)}
+        />
+        {error.length > 0 && <Text style={styles.error}>{error}</Text>}
+        {success.length > 0 && <Text style={styles.success}>{success}</Text>}
+
+        <Button
+          style={styles.btn}
+          mode="contained"
+          onPress={() => resetPassword()}>
           Send confirmation link
         </Button>
       </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  page: {
-    flex: 1,
-    flexDirection: 'column',
-    backgroundColor: '#fff',
-  },
-  container: {
-    padding: 15,
-  },
-  flexContainer: {
-    flex: 1,
-    textAlign: 'center',
-  },
-  input: {
-    marginBottom: 10,
-    borderRadius: 5,
-  },
-  btn: {
-    marginTop: 'auto',
-  },
-});
 
 export default Recover;

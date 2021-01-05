@@ -3,12 +3,13 @@ import {StyleSheet} from 'react-native';
 import {Appbar} from 'react-native-paper';
 import {useHistory} from 'react-router-native';
 
-function LightHeader({title}) {
+function LightHeader({title, redirect}) {
   const history = useHistory();
-
   return (
     <Appbar.Header dark={false} style={styles.transparentHeader}>
-      <Appbar.BackAction onPress={() => history.goBack()} />
+      <Appbar.BackAction
+        onPress={() => (redirect ? history.push(redirect) : history.goBack())}
+      />
       <Appbar.Content title={title} />
     </Appbar.Header>
   );

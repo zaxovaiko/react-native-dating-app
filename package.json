@@ -20,7 +20,8 @@
     "@react-native-firebase/auth": "^10.1.0",
     "@react-native-firebase/firestore": "^10.1.0",
     "@react-native-picker/picker": "^1.9.4",
-    "bad-words": "^3.0.4",
+    "geofire-common": "^5.1.0",
+    "gps-distance": "0.0.4",
     "gravatar": "^1.8.1",
     "ngeohash": "^0.6.3",
     "react": "16.13.1",
@@ -29,10 +30,13 @@
     "react-native-get-location": "^2.0.0",
     "react-native-gifted-chat": "^0.16.3",
     "react-native-paper": "^4.4.1",
+    "react-native-safe-area-context": "^3.1.9",
+    "react-native-safe-area-view": "^1.1.1",
     "react-native-svg": "^12.1.0",
     "react-native-svg-transformer": "^0.14.3",
     "react-native-vector-icons": "^7.1.0",
-    "react-router-native": "^5.2.0"
+    "react-router-native": "^5.2.0",
+    "validator": "^13.5.2"
   },
   "devDependencies": {
     "@babel/core": "^7.8.4",
