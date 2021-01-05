@@ -74,8 +74,8 @@ function App() {
                 <Route exact path="/chats/groups" component={Groups} />
                 <Route exact path="/room/create" component={CreateRoom} />
                 <Route exact path="/chats" component={MainChat} />
-                <Route exact path="/chats/group" component={GroupChats} />
-                <Route exact path="/chats/unique" component={Correspondence} />
+                <Route exact path="/chats/groupchats" component={GroupChats} />
+                <Route exact path="/chats/correspondence" component={Correspondence} />
                 <Route exact path="/liked" component={Liked} />
               </>
             )}

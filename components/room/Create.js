@@ -11,13 +11,16 @@ import {
   transparentHeader,
 } from '../../styles/index';
 import LightHeader from '../layouts/LightHeader';
+import {useHistory} from 'react-router-native';
 import {getTagByName} from '../../api/tags';
 
+import {createRoom} from '../../api/rooms';
+
 function Create() {
-  const [rooms, setRooms] = useState({
-    name: '',
-    topic: '',
-  });
+  const history = useHistory();
+
+  const [roomName, setRoomName] = useState('');
+  const [roomTopic, setRoomTopic] = useState('');
   const [tags, setTags] = useState([]);
   const [showTagModal, setShowTagModal] = useState(false);
   const [choosedTags, setChoosedTags] = useState([]);
@@ -37,6 +40,11 @@ function Create() {
       return;
     }
     setTags((p) => [...p, tg]);
+  }
+
+  function create(){
+    createRoom(roomName, roomTopic, tags)
+      .then(() => history.push('/'))
   }
 
 
@@ -83,20 +91,20 @@ function Create() {
           <TextInput
             style={styles.input}
             label="Room name"
-            value={rooms.name}
+            value={roomName}
             underlineColor="transparent"
-            onChangeText={(text) => setRooms((p) => ({...p, name: text}))}
+            onChangeText={(text) => setRoomName(text)}
           />
           <TextInput
             style={styles.input}
             label="Room topic"
-            value={rooms.topic}
+            value={roomTopic}
             underlineColor="transparent"
-            onChangeText={(text) => setRooms((p) => ({...p, topic: text}))}
+            onChangeText={(text) => setRoomTopic(text)}
           />
 
           <View>
-            <Text style={{fontWeight: 'bold', marginBottom: 10, marginLeft: 5}}>
+            <Text style={{fontWeight: 'bold', marginBottom: 5, marginLeft: 5}}>
               Interests
             </Text>
             
@@ -120,7 +128,10 @@ function Create() {
           </View>
         </View>
 
-        <Button style={styles.fixedBtn} mode="contained">
+        <Button 
+          style={styles.fixedBtn} 
+          mode="contained"
+          onPress={() => create()}>
           Create
         </Button>
       </View>
@@ -135,7 +146,6 @@ const styles = StyleSheet.create({
   input,
   fixedBtn,
   transparentHeader,
-  chip: {marginRight: 5, marginBottom: 4},
   bg: colors.white,
   findTag: {
     borderRadius: 5,
