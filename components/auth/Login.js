@@ -3,6 +3,9 @@ import {Text, Title, TextInput, Button, Caption} from 'react-native-paper';
 import {StyleSheet, View, ScrollView, TouchableOpacity} from 'react-native';
 import {Link, useHistory} from 'react-router-native';
 import auth from '@react-native-firebase/auth';
+import loginStyles from '../../styles/auth/login';
+
+const styles = StyleSheet.create(loginStyles);
 
 function Login() {
   const history = useHistory();
@@ -32,7 +35,7 @@ function Login() {
   return (
     <ScrollView contentContainerStyle={{...styles.container, ...styles.page}}>
       <View style={styles.flexContainer}>
-        <Text style={{...styles.text, ...styles.color}}>lover</Text>
+        <Text style={{...styles.text, ...styles.primary}}>lover</Text>
 
         <View>
           <Title style={styles.text}>Log in</Title>
@@ -73,48 +76,5 @@ function Login() {
     </ScrollView>
   );
 }
-
-const colors = {
-  primary: {color: '#6200ee'},
-  white: {color: '#fff'},
-};
-
-const styles = StyleSheet.create({
-  page: {
-    flex: 1,
-    flexDirection: 'column',
-    backgroundColor: '#fff',
-  },
-  flexContainer: {
-    flex: 1,
-    textAlign: 'center',
-    justifyContent: 'space-between',
-  },
-  container: {
-    padding: 15,
-  },
-  input: {
-    marginBottom: 10,
-    borderRadius: 5,
-  },
-  btn: {
-    marginLeft: 'auto',
-    marginRight: 'auto',
-  },
-  color: colors.primary,
-  text: {
-    textAlign: 'center',
-    paddingBottom: 10,
-    paddingTop: 10,
-  },
-  floatRight: {
-    alignItems: 'flex-end',
-  },
-  error: {
-    color: 'red',
-    textAlign: 'center',
-    marginBottom: 10,
-  },
-});
 
 export default Login;

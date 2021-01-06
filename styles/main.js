@@ -21,7 +21,8 @@ export default {
   mainImage: {
     zIndex: -1,
     width: '100%',
-    aspectRatio: 3 / 4,
+    height: '100%',
+    // aspectRatio: 9 / 16,
     resizeMode: 'cover',
   },
   userinfo: {
@@ -62,5 +63,23 @@ export default {
   },
   likeBtn: {
     color: 'red',
+  },
+  notFoundView: {
+    marginTop: 55,
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  notFoundIcon: {
+    alignSelf: 'center',
+    color: '#ddd',
+    margin: 'auto',
+  },
+  notFound: {
+    marginTop: 20,
+    fontSize: 15,
+    color: '#aaa',
+  },
+  notFoundButton: {
+    marginTop: 15,
   },
 };

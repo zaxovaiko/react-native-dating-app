@@ -19,6 +19,7 @@ import Profile from './components/user/Profile';
 import Nearby from './components/Nearby';
 import Liked from './components/Liked';
 import CreateRoom from './components/room/Create';
+import Saved from './components/Saved';
 
 function App() {
   const [init, setInit] = useState(true);
@@ -63,6 +64,7 @@ function App() {
                   <Route exact path="/password/change" component={PassChange} />
                   <Route exact path="/rooms/create" component={CreateRoom} />
                   <Route exact path="/liked" component={Liked} />
+                  <Route exact path="/saved" component={Saved} />
                   <Route exact path="/chats" component={Chats} />
                   <Route exact path="/chats/u" component={Chat} />
                   <Route exact path="/groups" component={Chat} />

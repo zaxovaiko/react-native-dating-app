@@ -29,4 +29,19 @@ export default {
     borderWidth: 1,
     borderColor: '#ddd',
   },
+  notFoundView: {
+    marginTop: 55,
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  icon: {
+    alignSelf: 'center',
+    color: '#ddd',
+    margin: 'auto',
+  },
+  notFound: {
+    marginTop: 20,
+    fontSize: 15,
+    color: '#aaa',
+  },
 };

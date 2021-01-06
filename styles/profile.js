@@ -36,6 +36,15 @@ export default {
     padding: 15,
     width: '100%',
     backgroundColor: 'rgba(0, 0, 0, .65)',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  userinfoIcons: {
+    color: '#fff',
+  },
+  userinfoIconsBlock: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   username: {
     fontSize: 20,

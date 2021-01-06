@@ -1,5 +1,8 @@
 import firestore from '@react-native-firebase/firestore';
+import * as lookup from 'country-code-lookup';
 import locationHelper from '../helpers/location';
+
+const API_WEATHER_KEY = 'b858d37e1324d289241c87a0f3fa70d3';
 
 // Get entire document by user id from users collection
 function getInfoByUserId(uid) {
@@ -25,23 +28,32 @@ export function getUserById(uid) {
 
 // Update user in users collection
 export function updateUserById(user) {
-  return getInfoByUserId(user.uid).then((doc) => {
-    return firestore().collection('users').doc(doc.id).update(user);
-  });
-}
+  // Use this hack to get country and city name
+  const query = `https://api.openweathermap.org/data/2.5/weather?lat=${user.location.latitude}&lon=${user.location.longitude}&appid=${API_WEATHER_KEY}`;
 
-export function* getUserByCriteria({interestedIn, location}) {
-  //
+  return fetch(query)
+    .then((res) => res.json())
+    .then((res) => {
+      user.city = res.name || 'Unknown';
+      user.country = lookup.byIso(res.sys.country).country || 'Unknown';
+      return getInfoByUserId(user.uid).then((doc) =>
+        firestore().collection('users').doc(doc.id).update(user),
+      );
+    })
+    .catch((err) => console.warn(err));
 }
 
 // Gets users continiously with parameters
 export function getUserFilteredByLocation({interestedIn, location}, startAt) {
   const {lower, upper} = locationHelper(location, 200);
 
-  let ref = firestore()
-    .collection('users')
-    .where('complete', '==', true)
-    .where('gender', '==', interestedIn)
+  let ref = firestore().collection('users').where('complete', '==', true);
+
+  if (interestedIn !== 2) {
+    ref = ref.where('gender', '==', interestedIn);
+  }
+
+  ref
     .orderBy('location.geohash')
     .where('location.geohash', '>=', lower)
     .where('location.geohash', '<=', upper);
@@ -50,7 +62,7 @@ export function getUserFilteredByLocation({interestedIn, location}, startAt) {
     ref = ref.startAt(startAt);
   }
 
-  // TODO: Add age filter and interestedAt filter
+  // TODO: Add age filter
   return ref
     .limit(2)
     .get()
@@ -75,7 +87,18 @@ export function createUser(user) {
   });
 }
 
-export function saveUser(uid, saveUid) {}
+// Populates saved users
+export function getSaved(uid) {
+  return getUserById(uid)
+    .then(async (res) => {
+      const savedUsers = [];
+      for (const su of res.saved) {
+        savedUsers.push(await getUserById(su));
+      }
+      return savedUsers;
+    })
+    .catch((err) => console.log(err, 'API user saved error'));
+}
 
 export function likeUser(uid, likeUid) {}
 

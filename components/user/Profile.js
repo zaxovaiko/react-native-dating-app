@@ -1,11 +1,20 @@
 import React, {useState, useEffect, useContext} from 'react';
-import {ScrollView, StyleSheet, View, Image} from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  View,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
 import {Text, Chip, Caption} from 'react-native-paper';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {faUserEdit, faCommentDots} from '@fortawesome/free-solid-svg-icons';
 
 import profileStyles from '../../styles/profile';
 import {getUserById} from '../../api/user';
 import AppContext from '../../contexts/AppContext';
 import LightHeader from '../layouts/LightHeader';
+import {Link} from 'react-router-native';
 
 const MAX_LENGTH = 60;
 
@@ -51,12 +60,31 @@ function Profile({match}) {
         <View>
           <Image source={{uri: profile.picture}} style={styles.mainImg} />
           <View style={styles.userinfo}>
-            <Text style={styles.username}>
-              {profile.name}, {profile.age}
-            </Text>
-            <Text style={styles.location}>
-              {profile.location.latitude} {profile.location.longitude}
-            </Text>
+            <View>
+              <Text style={styles.username}>
+                {profile.name}, {profile.age}
+              </Text>
+              <Text style={styles.location}>
+                {profile.city}, {profile.country}
+              </Text>
+            </View>
+            <View style={styles.userinfoIconsBlock}>
+              {match.params.uid === user.uid ? (
+                <Link component={TouchableOpacity} to="/setup">
+                  <FontAwesomeIcon
+                    icon={faUserEdit}
+                    size={30}
+                    style={{...styles.userinfoIcons, ...styles.userEditIcon}}
+                  />
+                </Link>
+              ) : (
+                <FontAwesomeIcon
+                  icon={faCommentDots}
+                  size={30}
+                  style={styles.userinfoIcons}
+                />
+              )}
+            </View>
           </View>
         </View>
 

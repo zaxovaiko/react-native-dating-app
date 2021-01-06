@@ -119,6 +119,7 @@ function Setup() {
     updateUserById({
       ...userinfo,
       complete: true,
+      saved: [],
       minAge: +userinfo.minAge,
       location: {
         ...userinfo.location,

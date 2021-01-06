@@ -7,19 +7,23 @@ import {
   faSignOutAlt,
   faUserEdit,
   faLockOpen,
-  faGlobe,
   faUserPlus,
+  faStar,
 } from '@fortawesome/free-solid-svg-icons';
 import auth from '@react-native-firebase/auth';
+
+import settingsStyles from '../../styles/settings';
 import LightHeader from '../layouts/LightHeader';
 
 const links = [
   {link: '/setup', icon: faUserEdit, text: 'Update profile'},
   {link: '/password/change', icon: faLockOpen, text: 'Change password'},
-  {link: '/lang', icon: faGlobe, text: 'Language'},
+  {link: '/saved', icon: faStar, text: 'Saved'},
   {link: '/room/create', icon: faUserEdit, text: 'Create a thematic room'},
   {link: '/room/join', icon: faUserPlus, text: 'Join a thematic room'},
 ];
+
+const styles = StyleSheet.create(settingsStyles);
 
 function SettingsPage() {
   const history = useHistory();
@@ -27,9 +31,7 @@ function SettingsPage() {
   function logout() {
     auth()
       .signOut()
-      .then(() => {
-        history.push('/');
-      });
+      .then(() => history.push('/'));
   }
 
   return (
@@ -39,7 +41,7 @@ function SettingsPage() {
       <View style={{...styles.container, ...styles.scroll}}>
         {links.map(({icon, link, text}, i) => (
           <Link to={link} key={i} component={TouchableOpacity}>
-            <View style={{...styles.group}}>
+            <View style={styles.group}>
               <FontAwesomeIcon style={styles.icon} size={14} icon={icon} />
               <Text style={styles.groupText}>{text}</Text>
             </View>
@@ -59,35 +61,5 @@ function SettingsPage() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  scroll: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  container: {
-    padding: 15,
-  },
-  page: {
-    flex: 1,
-    flexDirection: 'column',
-  },
-  group: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  bottomGroup: {
-    marginTop: 'auto',
-    marginBottom: 0,
-  },
-  groupText: {
-    padding: 15,
-  },
-  icon: {
-    color: '#262626',
-    padding: 15,
-  },
-});
 
 export default SettingsPage;
