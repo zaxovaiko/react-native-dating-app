@@ -22,7 +22,6 @@ export default {
     zIndex: -1,
     width: '100%',
     height: '100%',
-    // aspectRatio: 9 / 16,
     resizeMode: 'cover',
   },
   userinfo: {
@@ -65,8 +64,9 @@ export default {
     color: 'red',
   },
   notFoundView: {
-    marginTop: 55,
+    flex: 1,
     flexDirection: 'column',
+    justifyContent: 'center',
     alignItems: 'center',
   },
   notFoundIcon: {

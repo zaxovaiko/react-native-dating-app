@@ -5,12 +5,14 @@ export default {
   },
   row: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
   },
   mb: {
     marginBottom: 10,
   },
   mr: {
     marginRight: 5,
+    marginBottom: 5,
   },
   sectionTitle: {
     fontWeight: '700',

@@ -23,32 +23,28 @@ const styles = StyleSheet.create(profileStyles);
 function Profile({match}) {
   const {user} = useContext(AppContext);
 
-  const [init, setInit] = useState(true);
-  const [profile, setProfile] = useState({
-    name: '',
-    age: 0,
-    tags: [],
-    status,
-  });
-  const [status, setStatus] = useState({
-    text: profile.status,
-    show: false,
-  });
+  const [init, setInit] = useState(false);
+  const [showStatus, setShowStatus] = useState(false);
+  const [profile, setProfile] = useState();
 
   useEffect(() => {
+    let isMounted = true;
+
     getUserById(match.params.uid)
       .then((usr) => {
-        setProfile(usr);
-        setStatus({
-          text: usr.status,
-          show: false,
-        });
-        setInit(false);
+        if (isMounted) {
+          setProfile(usr);
+          setInit(true);
+        }
       })
       .catch((err) => console.log(err, 'Profile useEffect error'));
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
-  if (init) {
+  if (!init) {
     return null;
   }
 
@@ -89,43 +85,46 @@ function Profile({match}) {
         </View>
 
         <View style={styles.page}>
-          <View style={styles.mb}>
-            <Text>
-              {status.text.substr(0, MAX_LENGTH) + (status.show ? '' : '...')}
-              {status.text.length > MAX_LENGTH &&
-                status.show &&
-                status.text.substr(MAX_LENGTH, status.text.length)}
-            </Text>
-            {status.text.length > MAX_LENGTH && (
-              <Caption
-                onPress={() => setStatus((p) => ({...p, show: !p.show}))}>
-                {`Show ${!status.show ? 'more' : 'less'}`}
-              </Caption>
-            )}
-          </View>
+          {profile.status.length > 0 && (
+            <View style={styles.mb}>
+              <Text>
+                {profile.status.length <= MAX_LENGTH && profile.status}
+                {profile.status.length > MAX_LENGTH &&
+                  !showStatus &&
+                  profile.status.substr(0, MAX_LENGTH) + '...'}
+                {profile.status.length > MAX_LENGTH &&
+                  showStatus &&
+                  profile.status}
+              </Text>
 
-          <View style={styles.mb}>
-            <Text style={styles.sectionTitle}>Interests:</Text>
-            <View style={styles.row}>
-              {profile.tags.map((e, i) => (
-                <Chip style={styles.mr} key={i} mode="outlined">
-                  {e}
-                </Chip>
-              ))}
+              {profile.status.length > MAX_LENGTH && (
+                <Caption onPress={() => setShowStatus((p) => !p)}>
+                  {`Show ${!showStatus ? 'more' : 'less'}`}
+                </Caption>
+              )}
             </View>
-          </View>
+          )}
+
+          {profile.tags.length > 0 && (
+            <View style={styles.mb}>
+              <Text style={styles.sectionTitle}>Interests:</Text>
+              <View style={styles.row}>
+                {profile.tags.map((e, i) => (
+                  <Chip style={styles.mr} key={i} mode="outlined">
+                    {e}
+                  </Chip>
+                ))}
+              </View>
+            </View>
+          )}
 
           <View>
-            <Text style={styles.sectionTitle}>Instagram photos:</Text>
+            <Text style={styles.sectionTitle}>Photos:</Text>
             <View style={styles.igImages}>
               {[...Array(4).keys()].map((_, i) => (
                 <View style={styles.igImageWrapper} key={i}>
                   <Image
-                    key={i}
-                    source={{
-                      uri:
-                        'https://www.wallpaperup.com/uploads/wallpapers/2019/04/28/1321159/385b08992e91e605d2cb3d8b1aa0d8c4.jpg',
-                    }}
+                    source={{uri: profile.picture}}
                     style={styles.igImage}
                   />
                 </View>

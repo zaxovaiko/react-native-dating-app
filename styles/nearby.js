@@ -1,8 +1,16 @@
 export default {
   container: {
     flex: 1,
-    flexDirection: 'column',
     backgroundColor: '#fff',
+  },
+  scrollView: {
+    flex: 1,
+  },
+  notFoundView: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   images: {
     flexDirection: 'row',
@@ -28,11 +36,6 @@ export default {
     borderRadius: 100,
     borderWidth: 1,
     borderColor: '#ddd',
-  },
-  notFoundView: {
-    marginTop: 55,
-    flexDirection: 'column',
-    alignItems: 'center',
   },
   icon: {
     alignSelf: 'center',

@@ -23,7 +23,6 @@ const styles = StyleSheet.create(nearbyStyles);
 
 function Nearby() {
   const {user} = useContext(AppContext);
-  const [location, setLocation] = useState({});
   const [users, setUsers] = useState([]);
   const [init, setInit] = useState(true);
 
@@ -37,15 +36,31 @@ function Nearby() {
       .then((loc) => {
         if (isMounted) {
           getUserById(user.uid)
-            .then((u) => {
-              setLocation(loc);
+            .then((u) =>
               getNearbyUsers(u.interestedIn, loc)
-                .then((res) =>
-                  setUsers(res.filter((e) => e.email !== user.email)),
-                )
-                .catch(() => setUsers([]))
-                .then(() => setInit(false));
-            })
+                .then((res) => {
+                  setUsers(
+                    res
+                      .filter((e) => e.email !== user.email)
+                      .filter((e) => e.age >= u.minAge)
+                      .map((e) => ({
+                        ...e,
+                        distance: distance(
+                          loc.latitude,
+                          loc.longitude,
+                          e.location.latitude,
+                          e.location.longitude,
+                        ),
+                      }))
+                      .sort((a, b) => a.distance - b.distance),
+                  );
+                })
+                .catch((err) => {
+                  console.error(err);
+                  setUsers([]);
+                })
+                .then(() => setInit(false)),
+            )
             .catch((err) => console.error(err));
         }
       })
@@ -62,7 +77,7 @@ function Nearby() {
 
   return (
     <View style={styles.container}>
-      <ScrollView>
+      <ScrollView contentContainerStyle={styles.scrollView}>
         <LightHeader title="People nearby" />
 
         {users.length === 0 && (
@@ -79,22 +94,16 @@ function Nearby() {
         {users.length > 0 && (
           <View style={styles.images}>
             {users.map((usr, i) => (
-              <TouchableOpacity key={i} style={styles.imageBlock}>
-                <Link to={`/profile/${usr.uid}`}>
+              <View key={i} style={styles.imageBlock}>
+                <Link component={TouchableOpacity} to={`/profile/${usr.uid}`}>
                   <>
                     <Image source={{uri: usr.picture}} style={styles.image} />
                     <Text style={styles.distance}>
-                      {distance(
-                        location.latitude,
-                        location.longitude,
-                        usr.location.latitude,
-                        usr.location.longitude,
-                      ).toFixed(2)}{' '}
-                      km
+                      {usr.distance.toFixed(2)} km
                     </Text>
                   </>
                 </Link>
-              </TouchableOpacity>
+              </View>
             ))}
           </View>
         )}

@@ -38,7 +38,7 @@ function Main() {
 
   const [init, setInit] = useState(true);
   const [currentUser, setCurrentUser] = useState();
-  const [profile, setProfile] = useState();
+  const [profile, setProfile] = useState(false);
   const [nextUser, setNextUser] = useState();
 
   const controlIcons = [
@@ -153,7 +153,7 @@ function Main() {
             size={150}
             icon={faUserTimes}
           />
-          <Text style={styles.notFound}>There is no anyone to show</Text>
+          <Text style={styles.notFound}>There is no one to show</Text>
           <Button onPress={() => tryAgain()} style={styles.notFoundButton}>
             Try again
           </Button>
@@ -164,10 +164,13 @@ function Main() {
         <>
           <View style={styles.mainImageBlock}>
             <Image source={{uri: profile.picture}} style={styles.mainImage} />
+
             <View style={styles.userinfo}>
-              <Headline style={styles.username}>
-                {profile.name}, {profile.age}
-              </Headline>
+              <Link component={TouchableOpacity} to={`/profile/${profile.uid}`}>
+                <Headline style={styles.username}>
+                  {profile.name}, {profile.age}
+                </Headline>
+              </Link>
               <Text style={styles.location}>
                 {profile.city}, {profile.country}
               </Text>
