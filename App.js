@@ -27,21 +27,26 @@ function App() {
   const [complete, setComplete] = useState(false);
 
   useEffect(() => {
+    let isMounted = true;
+
     const sub = auth().onAuthStateChanged((usr) => {
-      setUser(usr);
+      if (isMounted) {
+        setUser(usr);
 
-      if (usr) {
-        getUserById(usr.uid)
-          .then((doc) => setComplete(doc.complete))
-          .catch((err) => console.error(err, 'App onAuthStateChange'));
-      }
+        if (usr) {
+          getUserById(usr.uid)
+            .then((doc) => setComplete(doc.complete))
+            .catch((err) => console.error(err, 'App onAuthStateChange'));
+        }
 
-      if (init) {
         setInit(false);
       }
     });
 
-    return sub;
+    return () => {
+      isMounted = false;
+      return sub();
+    };
   }, []);
 
   if (init) {

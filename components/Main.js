@@ -42,7 +42,7 @@ function Main() {
   const [nextUser, setNextUser] = useState();
 
   const controlIcons = [
-    {icon: faHeartBroken, style: styles.dislikeBtn, onPress: likeUser},
+    {icon: faHeartBroken, style: styles.dislikeBtn, onPress: dislikeUser},
     {
       icon:
         profile &&
@@ -57,79 +57,130 @@ function Main() {
     {icon: faHeart, style: styles.likeBtn, onPress: likeUser},
   ];
 
+  async function findAndSetNextValidUser(cu, next = null) {
+    let possibleCurrentProfile = profile;
+    try {
+      while (true) {
+        const res = await getUserFilteredByLocation(cu, next);
+
+        possibleCurrentProfile = res.current.data();
+        next = res.next;
+
+        if (
+          !next &&
+          ((cu.liked && cu.liked.indexOf(possibleCurrentProfile.uid) !== -1) ||
+            (cu.disliked &&
+              cu.disliked.indexOf(possibleCurrentProfile.uid) !== -1))
+        ) {
+          setProfile(false);
+          setNextUser(null);
+          break;
+        }
+
+        if (
+          possibleCurrentProfile.age >= cu.minAge &&
+          ((!cu.liked && !cu.disliked) ||
+            (cu.liked &&
+              cu.liked.indexOf(possibleCurrentProfile.uid) === -1 &&
+              !cu.disliked) ||
+            (cu.disliked &&
+              cu.disliked.indexOf(possibleCurrentProfile.uid) === -1 &&
+              !cu.liked) ||
+            (cu.liked.indexOf(possibleCurrentProfile.uid) === -1 &&
+              cu.disliked.indexOf(possibleCurrentProfile.uid) === -1))
+        ) {
+          setProfile(possibleCurrentProfile);
+          setNextUser(res.next);
+          break;
+        }
+      }
+    } catch (error) {
+      console.log(error);
+      setProfile(false);
+      setNextUser(null);
+    }
+  }
+
   useEffect(() => {
     let isMounted = true;
 
-    getUserById(user.uid)
-      .then((cu) => {
-        if (isMounted) {
+    (async () => {
+      if (isMounted) {
+        try {
+          const cu = await getUserById(user.uid);
           setCurrentUser(cu);
+          await findAndSetNextValidUser(cu);
+        } catch (err) {
+          console.error(err);
         }
-
-        getUserFilteredByLocation(cu)
-          .then((res) => {
-            if (isMounted) {
-              setProfile(res.current.data());
-              setNextUser(res.next);
-              setInit(false);
-            }
-          })
-          .catch((err) => {
-            console.warn(err);
-            if (isMounted) {
-              setProfile(false);
-              setInit(false);
-            }
-          });
-      })
-      .catch((err) => console.warn(err));
+        setInit(false);
+      }
+    })();
 
     return () => {
       isMounted = false;
     };
   }, []);
 
-  function likeUser() {
-    if (!init && nextUser) {
-      return getUserFilteredByLocation(currentUser, nextUser).then((res) => {
-        setProfile(res.current.data());
-        setNextUser(res.next);
-      });
-    }
-    setProfile(false);
-  }
-
-  function saveUser() {
-    getUserById(user.uid)
-      .then((u) => {
-        if (u.saved) {
-          const idx = u.saved.indexOf(profile.uid);
-          if (idx !== -1) {
-            u.saved.splice(idx, 1);
-          } else {
-            u.saved.push(profile.uid);
+  async function updateByField(field) {
+    try {
+      const u = {...currentUser};
+      if (u[field]) {
+        const idx = u[field].indexOf(profile.uid);
+        if (idx === -1) {
+          const of = field === 'liked' ? 'disliked' : 'liked';
+          if (u[of].indexOf(profile.uid) === -1) {
+            u[field].push(profile.uid);
           }
-        } else {
-          u.saved = [profile.uid];
         }
+      } else {
+        u[field] = [profile.uid];
+      }
 
-        updateUserById(u)
-          .then(() => setCurrentUser(u))
-          .catch((err) => console.log(err, 'error occured'));
-      })
-      .catch((err) => console.error(err));
+      // setCurrentUser(u);
+      await updateUserById(u);
+      await findAndSetNextValidUser(u, nextUser);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
-  function tryAgain() {
-    getUserFilteredByLocation(currentUser)
-      .then((res) => {
-        setProfile(res.current.data());
-        setNextUser(res.next);
-      })
-      .catch((err) => {
-        console.warn(err);
-        setProfile(false);
-      });
+  async function likeUser() {
+    await updateByField('liked');
+  }
+
+  async function dislikeUser() {
+    await updateByField('disliked');
+  }
+
+  async function saveUser() {
+    try {
+      const u = {...currentUser};
+      if (u.saved) {
+        const idx = u.saved.indexOf(profile.uid);
+        if (idx !== -1) {
+          u.saved.splice(idx, 1);
+        } else {
+          u.saved.push(profile.uid);
+        }
+      } else {
+        u.saved = [profile.uid];
+      }
+
+      await updateUserById(u);
+      setCurrentUser(u);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async function tryAgain() {
+    try {
+      await findAndSetNextValidUser(currentUser);
+    } catch (err) {
+      console.warn(err);
+      setProfile(false);
+    }
   }
 
   if (init) {

@@ -119,7 +119,9 @@ function Setup() {
     updateUserById({
       ...userinfo,
       complete: true,
-      saved: [],
+      saved: userinfo.saved || [],
+      liked: userinfo.liked || [],
+      disliked: userinfo.disliked || [],
       minAge: +userinfo.minAge,
       location: {
         ...userinfo.location,

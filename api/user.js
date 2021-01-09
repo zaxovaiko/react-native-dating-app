@@ -62,7 +62,6 @@ export function getUserFilteredByLocation({interestedIn, location}, startAt) {
     ref = ref.startAt(startAt);
   }
 
-  // TODO: Add age filter
   return ref
     .limit(2)
     .get()
