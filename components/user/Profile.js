@@ -11,7 +11,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faUserEdit, faCommentDots} from '@fortawesome/free-solid-svg-icons';
 
 import profileStyles from '../../styles/profile';
-import {getUserById} from '../../api/user';
+import {getUserById, isLikingUser} from '../../api/user';
 import AppContext from '../../contexts/AppContext';
 import LightHeader from '../layouts/LightHeader';
 import {Link} from 'react-router-native';
@@ -25,6 +25,7 @@ function Profile({match}) {
 
   const [init, setInit] = useState(false);
   const [showStatus, setShowStatus] = useState(false);
+  const [isLiking, setIsLiking] = useState(false);
   const [profile, setProfile] = useState();
 
   useEffect(() => {
@@ -32,10 +33,16 @@ function Profile({match}) {
 
     getUserById(match.params.uid)
       .then((usr) => {
-        if (isMounted) {
-          setProfile(usr);
-          setInit(true);
-        }
+        isLikingUser(usr.uid, user.uid)
+          .then((res) => {
+            if (isMounted) {
+              console.log(res);
+              setProfile(usr);
+              setIsLiking(res);
+              setInit(true);
+            }
+          })
+          .catch((err) => console.log(err));
       })
       .catch((err) => console.log(err, 'Profile useEffect error'));
 
@@ -65,7 +72,7 @@ function Profile({match}) {
               </Text>
             </View>
             <View style={styles.userinfoIconsBlock}>
-              {match.params.uid === user.uid ? (
+              {match.params.uid === user.uid && (
                 <Link component={TouchableOpacity} to="/setup">
                   <FontAwesomeIcon
                     icon={faUserEdit}
@@ -73,7 +80,8 @@ function Profile({match}) {
                     style={{...styles.userinfoIcons, ...styles.userEditIcon}}
                   />
                 </Link>
-              ) : (
+              )}
+              {isLiking && match.params.uid !== user.uid && (
                 <FontAwesomeIcon
                   icon={faCommentDots}
                   size={30}

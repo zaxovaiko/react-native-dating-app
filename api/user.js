@@ -99,6 +99,27 @@ export function getSaved(uid) {
     .catch((err) => console.log(err, 'API user saved error'));
 }
 
-export function likeUser(uid, likeUid) {}
+// Get all people who liked user with ui
+export function getLiked(uid) {
+  return firestore()
+    .collection('users')
+    .where('liked', 'array-contains', uid)
+    .where('uid', '!=', uid)
+    .get()
+    .then((docs) => {
+      if (docs.docs.length === 0) {
+        throw new Error('Users were not found.');
+      }
+      return docs.docs.map((e) => e.data());
+    });
+}
 
-export function dislikeUser(uid, dislikeUid) {}
+// Check if user a likes user b
+export function isLikingUser(uidA, uidB) {
+  return firestore()
+    .collection('users')
+    .where('uid', '==', uidA)
+    .where('liked', 'array-contains', uidB)
+    .get()
+    .then((docs) => Promise.resolve(docs.docs.length !== 0));
+}

@@ -102,34 +102,29 @@ function Main() {
   }
 
   useEffect(() => {
-    let isMounted = true;
-
     (async () => {
-      if (isMounted) {
-        try {
-          const cu = await getUserById(user.uid);
-          setCurrentUser(cu);
-          await findAndSetNextValidUser(cu);
-        } catch (err) {
-          console.error(err);
-        }
-        setInit(false);
+      try {
+        const cu = await getUserById(user.uid);
+        setCurrentUser(cu);
+        await findAndSetNextValidUser(cu);
+      } catch (err) {
+        console.error(err);
       }
+      setInit(false);
     })();
-
-    return () => {
-      isMounted = false;
-    };
   }, []);
 
   async function updateByField(field) {
     try {
       const u = {...currentUser};
+
+      console.log(u[field]);
+
       if (u[field]) {
         const idx = u[field].indexOf(profile.uid);
         if (idx === -1) {
           const of = field === 'liked' ? 'disliked' : 'liked';
-          if (u[of].indexOf(profile.uid) === -1) {
+          if (!u[of] || u[of].indexOf(profile.uid) === -1) {
             u[field].push(profile.uid);
           }
         }
@@ -137,7 +132,7 @@ function Main() {
         u[field] = [profile.uid];
       }
 
-      // setCurrentUser(u);
+      setCurrentUser(u);
       await updateUserById(u);
       await findAndSetNextValidUser(u, nextUser);
     } catch (error) {
