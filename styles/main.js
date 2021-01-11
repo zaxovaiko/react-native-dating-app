@@ -7,12 +7,11 @@ export default {
     padding: 20,
     zIndex: 1,
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
   },
   topBarIcon: {
     color: '#8E44AD',
     zIndex: 2,
-    marginHorizontal: 20,
   },
   mainImageBlock: {
     flex: 1,

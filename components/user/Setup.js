@@ -4,6 +4,7 @@ import {
   ScrollView,
   StyleSheet,
   Image,
+  Alert,
   TouchableOpacity,
 } from 'react-native';
 import {useHistory} from 'react-router-native';
@@ -77,12 +78,25 @@ function Setup() {
   });
 
   useEffect(() => {
-    setInit(false);
     let isMounted = true;
 
     getUserById(user.uid)
       .then((loggedUser) => {
         if (isMounted) {
+          if (loggedUser.complete) {
+            setUserinfo(loggedUser);
+            setPreviewImage({img: loggedUser.picture, ext: false});
+            setDate(
+              new Date(new Date(Date.now()).getFullYear() - loggedUser.age, 1),
+            );
+            setInit(false);
+          }
+
+          if (!loggedUser.complete) {
+            setUserinfo({...userinfo, ...loggedUser});
+            setInit(false);
+          }
+
           GetLocation.getCurrentPosition({
             enableHighAccuracy: true,
             timeout: 10000,
@@ -91,14 +105,6 @@ function Setup() {
               setUserinfo((p) => ({...p, location: {longitude, latitude}})),
             )
             .catch((err) => console.error(err, 'Setup useEffect error'));
-        }
-
-        if (loggedUser.complete && isMounted) {
-          setUserinfo(loggedUser);
-          setPreviewImage({img: loggedUser.picture, ext: false});
-          setDate(
-            new Date(new Date(Date.now()).getFullYear() - loggedUser.age, 1),
-          );
         }
       })
       .catch((err) => console.error(err, 'Setup useEffect error'));
@@ -186,8 +192,8 @@ function Setup() {
 
   function cropImg() {
     ImagePicker.openPicker({
-      width: 720,
-      height: 1280,
+      width: 1080,
+      height: 1920,
       cropping: true,
     })
       .then(async (image) => {
@@ -204,6 +210,25 @@ function Setup() {
     setChoosedTags((p) => p.filter((e) => e.name !== tg));
     setUserinfo((p) => ({...p, tags: [...p.tags, tg]}));
   }
+
+  const confirmDeletAlert = (tagName) =>
+    Alert.alert(
+      'Confirm',
+      `Do you want to remove ${tagName}?`,
+      [
+        {text: 'Cancel', style: 'cancel'},
+        {
+          text: 'Remove',
+          onPress: () => {
+            setUserinfo((p) => ({
+              ...p,
+              tags: p.tags.filter((e) => e !== tagName),
+            }));
+          },
+        },
+      ],
+      {cancelable: false},
+    );
 
   if (init) {
     return null;
@@ -361,7 +386,7 @@ function Setup() {
             style={styles.numericInput}
             mode="flat"
             keyboardType="numeric"
-            value={String(userinfo.minAge)}
+            value={String(userinfo.minAge || 18)}
             underlineColor="transparent"
             maxLength={2}
             onChangeText={(minAge) => setUserinfo((p) => ({...p, minAge}))}
@@ -378,12 +403,7 @@ function Setup() {
                 key={i}
                 mode="outlined"
                 style={styles.chips}
-                onPress={() =>
-                  setUserinfo((p) => ({
-                    ...p,
-                    tags: p.tags.filter((e) => e !== tg),
-                  }))
-                }>
+                onPress={() => confirmDeletAlert(tg)}>
                 {tg}
               </Chip>
             ))}

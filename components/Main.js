@@ -117,9 +117,6 @@ function Main() {
   async function updateByField(field) {
     try {
       const u = {...currentUser};
-
-      console.log(u[field]);
-
       if (u[field]) {
         const idx = u[field].indexOf(profile.uid);
         if (idx === -1) {

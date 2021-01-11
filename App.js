@@ -13,8 +13,6 @@ import PassChange from './components/auth/password/Change';
 import Settings from './components/user/Settings';
 import Setup from './components/user/Setup';
 import Main from './components/Main';
-import Chats from './components/chats/Chats';
-import Chat from './components/chats/Chat';
 import Profile from './components/user/Profile';
 import Nearby from './components/Nearby';
 import Liked from './components/Liked';
@@ -70,9 +68,6 @@ function App() {
                   <Route exact path="/rooms/create" component={CreateRoom} />
                   <Route exact path="/liked" component={Liked} />
                   <Route exact path="/saved" component={Saved} />
-                  <Route exact path="/chats" component={Chats} />
-                  <Route exact path="/chats/u" component={Chat} />
-                  <Route exact path="/groups" component={Chat} />
                 </>
               )}
               {(!user || (user && !complete)) && (

@@ -90,10 +90,8 @@ export default {
     marginRight: -15,
   },
   avatar: {
-    width: 250,
-    height: 250,
-    marginLeft: 'auto',
-    marginRight: 'auto',
+    width: '100%',
+    aspectRatio: 1 / 1,
     marginBottom: 30,
     borderRadius: 500,
   },
