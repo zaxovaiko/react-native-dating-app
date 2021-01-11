@@ -17,13 +17,10 @@ import Profile from './components/user/Profile';
 import Nearby from './components/Nearby';
 import Liked from './components/Liked';
 import CreateRoom from './components/room/Create';
-<<<<<<< HEAD
-import GroupChatting from './components/groups/GroupChatting'
-import GroupList from './components/groups/GroupList'
-import GroupChat from './components/groups/GroupChat'
-=======
+import GroupChatting from './components/groups/GroupChatting';
+import GroupList from './components/groups/GroupList';
+import GroupChat from './components/groups/GroupChat';
 import Saved from './components/Saved';
->>>>>>> 030bfaf527d314618e3d9b55c779a58ee92651fe
 
 function App() {
   const [init, setInit] = useState(true);
@@ -73,15 +70,14 @@ function App() {
                   <Route exact path="/password/change" component={PassChange} />
                   <Route exact path="/room/create" component={CreateRoom} />
                   <Route exact path="/liked" component={Liked} />
-<<<<<<< HEAD
-                  <Route exact path="/chats" component={Chats} />
-                  <Route exact path="/chats/u" component={Chat} />
                   <Route exact path="/groups/groupchat" component={GroupChat} />
-                  <Route exact path="/groups/groupchatting" component={GroupChatting} />
+                  <Route
+                    exact
+                    path="/groups/groupchatting"
+                    component={GroupChatting}
+                  />
                   <Route exact path="/groups/grouplist" component={GroupList} />
-=======
                   <Route exact path="/saved" component={Saved} />
->>>>>>> 030bfaf527d314618e3d9b55c779a58ee92651fe
                 </>
               )}
               {(!user || (user && !complete)) && (
