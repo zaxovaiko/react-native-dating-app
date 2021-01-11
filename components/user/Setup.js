@@ -1,5 +1,11 @@
 import React, {useState, useContext, useEffect} from 'react';
-import {View, ScrollView, StyleSheet, Image} from 'react-native';
+import {
+  View,
+  ScrollView,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
 import {useHistory} from 'react-router-native';
 import {
   Paragraph,
@@ -13,7 +19,11 @@ import {
 import {Picker} from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import GetLocation from 'react-native-get-location';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {faCropAlt, faTrash} from '@fortawesome/free-solid-svg-icons';
 import gravatar from 'gravatar';
+import ImagePicker from 'react-native-image-crop-picker';
+import storage from '@react-native-firebase/storage';
 import * as geofire from 'geofire-common';
 
 import setupStyles from '../../styles/auth/setup';
@@ -35,17 +45,28 @@ function Setup() {
   const history = useHistory();
   const {user, setComplete, complete} = useContext(AppContext);
 
+  const defaultGravatarImage = gravatar.url(
+    user.email,
+    gravatarPicOptions,
+    'https',
+  );
+
   const [init, setInit] = useState(true);
   const [error, setError] = useState([]);
   const [tag, setTag] = useState('');
   const [date, setDate] = useState(Date.now());
   const [showTagModal, setShowTagModal] = useState(false);
+  const [previewImage, setPreviewImage] = useState({
+    img: defaultGravatarImage,
+    ext: false,
+  });
+  const [isPreviewing, setIsPreviewing] = useState(false);
   const [choosedTags, setChoosedTags] = useState([]);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [userinfo, setUserinfo] = useState({
     uid: user.uid,
     name: '',
-    picture: gravatar.url(user.email, gravatarPicOptions, 'https'),
+    picture: defaultGravatarImage,
     tags: [],
     status: '',
     age: 0,
@@ -74,6 +95,7 @@ function Setup() {
 
         if (loggedUser.complete && isMounted) {
           setUserinfo(loggedUser);
+          setPreviewImage({img: loggedUser.picture, ext: false});
           setDate(
             new Date(new Date(Date.now()).getFullYear() - loggedUser.age, 1),
           );
@@ -95,7 +117,7 @@ function Setup() {
     setShowDatePicker(false);
   }
 
-  function saveProfileInfo() {
+  async function saveProfileInfo() {
     setError([]);
 
     if (!isName(userinfo.name)) {
@@ -116,27 +138,41 @@ function Setup() {
       ]);
     }
 
-    updateUserById({
-      ...userinfo,
-      complete: true,
-      saved: userinfo.saved || [],
-      liked: userinfo.liked || [],
-      disliked: userinfo.disliked || [],
-      minAge: +userinfo.minAge,
-      location: {
-        ...userinfo.location,
-        geohash: geofire.geohashForLocation([
-          parseFloat(userinfo.location.latitude),
-          parseFloat(userinfo.location.longitude),
-        ]),
-      },
-      picture: gravatar.url(user.email, gravatarPicOptions, 'https'),
-    })
-      .then(() => {
-        setComplete(true);
-        history.push('/');
-      })
-      .catch((err) => console.log(err, 'Setup updateUserById error'));
+    let userImg;
+    if (previewImage.ext) {
+      try {
+        const path = `user_images/${user.uid}.${previewImage.ext}`;
+        const ref = storage().ref(path);
+        await ref.putFile(previewImage.img);
+        userImg = await storage().ref(path).getDownloadURL();
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    try {
+      await updateUserById({
+        ...userinfo,
+        complete: true,
+        saved: userinfo.saved || [],
+        liked: userinfo.liked || [],
+        disliked: userinfo.disliked || [],
+        minAge: +userinfo.minAge,
+        location: {
+          ...userinfo.location,
+          geohash: geofire.geohashForLocation([
+            parseFloat(userinfo.location.latitude),
+            parseFloat(userinfo.location.longitude),
+          ]),
+        },
+        picture: userImg || userinfo.picture || defaultGravatarImage,
+      });
+
+      setComplete(true);
+      history.push('/');
+    } catch (err) {
+      console.log(err, 'Setup updateUserById error');
+    }
   }
 
   function findTag(text) {
@@ -146,6 +182,19 @@ function Setup() {
         .then((tags) => setChoosedTags(tags))
         .catch((err) => console.error(err, 'Setup getTagByName error'));
     }
+  }
+
+  function cropImg() {
+    ImagePicker.openPicker({
+      width: 720,
+      height: 1280,
+      cropping: true,
+    })
+      .then(async (image) => {
+        setPreviewImage({img: image.path, ext: image.path.split('.').pop()});
+        setIsPreviewing(true);
+      })
+      .catch((err) => console.log(err));
   }
 
   function addToTags(tg) {
@@ -216,7 +265,33 @@ function Setup() {
           ...styles.fixes,
         }}>
         <View>
-          <Image style={styles.avatar} source={{uri: userinfo.picture}} />
+          <Image style={styles.avatar} source={{uri: previewImage.img}} />
+
+          <View style={styles.cropView}>
+            <TouchableOpacity onPress={() => cropImg()}>
+              <FontAwesomeIcon
+                icon={faCropAlt}
+                size={30}
+                style={styles.cropIcon}
+              />
+            </TouchableOpacity>
+          </View>
+
+          {isPreviewing && (
+            <View style={styles.removeView}>
+              <TouchableOpacity
+                onPress={() => {
+                  setPreviewImage({img: defaultGravatarImage, ext: false});
+                  setIsPreviewing(false);
+                }}>
+                <FontAwesomeIcon
+                  icon={faTrash}
+                  size={30}
+                  style={styles.removeIcon}
+                />
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
 
         <View style={styles.row}>

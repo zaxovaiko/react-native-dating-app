@@ -36,7 +36,6 @@ function Profile({match}) {
         isLikingUser(usr.uid, user.uid)
           .then((res) => {
             if (isMounted) {
-              console.log(res);
               setProfile(usr);
               setIsLiking(res);
               setInit(true);

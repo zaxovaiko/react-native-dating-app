@@ -25,7 +25,7 @@ export default {
   },
   mainImg: {
     width: '100%',
-    aspectRatio: 3 / 4,
+    aspectRatio: 9 / 16,
     resizeMode: 'cover',
   },
   location: {
