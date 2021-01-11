@@ -41,7 +41,7 @@ function Correspondence() {
                   style={{...styles.peopleIcon}}
                 />
                 <View style={{...styles.chatView}}>
-                  <Link to="/chats/groupchats">
+                  <Link to="/groups/groupchat">
                     <Text style={styles.chatText0}>Marcin</Text>
                   </Link>
                   <Link to="">

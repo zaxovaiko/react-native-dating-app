@@ -18,7 +18,7 @@ const links = [
   {link: '/password/change', icon: faLockOpen, text: 'Change password'},
   {link: '/lang', icon: faGlobe, text: 'Language'},
   {link: '/room/create', icon: faUserEdit, text: 'Create a thematic room'},
-  {link: '/room/join', icon: faUserPlus, text: 'Join a thematic room'},
+  {link: '/groups/grouplist', icon: faUserPlus, text: 'Join a thematic room'},
 ];
 
 function SettingsPage() {

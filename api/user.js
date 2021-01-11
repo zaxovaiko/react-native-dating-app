@@ -2,7 +2,7 @@ import firestore from '@react-native-firebase/firestore';
 import locationHelper from '../helpers/location';
 
 // Get entire document by user id from users collection
-function getInfoByUserId(uid) {
+export function getInfoByUserId(uid) {
   return firestore()
     .collection('users')
     .where('uid', '==', uid)
@@ -72,6 +72,7 @@ export function createUser(user) {
     email: user.email,
     uid: user.uid,
     complete: false,
+    rooms: []
   });
 }
 

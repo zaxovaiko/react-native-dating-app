@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {StyleSheet, View} from 'react-native';
+import { v4 as uuidv4 } from 'uuid';
 import {
   Button,
   Text,
@@ -25,7 +26,7 @@ import {createRoom} from '../../api/rooms';
 
 function Create() {
   const history = useHistory();
-
+  var roomId;
   const [roomName, setRoomName] = useState('');
   const [roomTopic, setRoomTopic] = useState('');
   const [tags, setTags] = useState([]);
@@ -37,7 +38,7 @@ function Create() {
     setTag(text);
     if (text.length > 1) {
       getTagByName(text)
-        .then((docs) => setChoosedTags(docs.docs.map((e) => e.data())))
+        .then((tags) => setChoosedTags(tags))
         .catch((err) => console.log(err, 'Setup getTagByName error'));
     }
   }
@@ -48,6 +49,13 @@ function Create() {
     }
     setTags((p) => [...p, tg]);
   }
+
+  function create(){
+    roomId = uuidv4();
+    createRoom(roomName, roomTopic, tags, roomId)
+      .then(() => history.push('/groups/groupchatting'))
+  }
+
 
   return (
     <View style={{...styles.page, ...styles.bg}}>

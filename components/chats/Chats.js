@@ -17,7 +17,7 @@ function Chats() {
           />
           <View style={styles.chatView}>
             <View>
-              <Link to="/chats/groupchats">
+              <Link to="/groups/groupchat">
                 <Text style={styles.chatText0}>Groups</Text>
               </Link>
             </View>
