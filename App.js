@@ -13,15 +13,17 @@ import PassChange from './components/auth/password/Change';
 import Settings from './components/user/Settings';
 import Setup from './components/user/Setup';
 import Main from './components/Main';
-import Chats from './components/chats/Chats';
-import Chat from './components/chats/Chat';
 import Profile from './components/user/Profile';
 import Nearby from './components/Nearby';
 import Liked from './components/Liked';
 import CreateRoom from './components/room/Create';
+<<<<<<< HEAD
 import GroupChatting from './components/groups/GroupChatting'
 import GroupList from './components/groups/GroupList'
 import GroupChat from './components/groups/GroupChat'
+=======
+import Saved from './components/Saved';
+>>>>>>> 030bfaf527d314618e3d9b55c779a58ee92651fe
 
 function App() {
   const [init, setInit] = useState(true);
@@ -29,21 +31,26 @@ function App() {
   const [complete, setComplete] = useState(false);
 
   useEffect(() => {
+    let isMounted = true;
+
     const sub = auth().onAuthStateChanged((usr) => {
-      setUser(usr);
+      if (isMounted) {
+        setUser(usr);
 
-      if (usr) {
-        getUserById(usr.uid)
-          .then((doc) => setComplete(doc.complete))
-          .catch((err) => console.error(err, 'App onAuthStateChange'));
-      }
+        if (usr) {
+          getUserById(usr.uid)
+            .then((doc) => setComplete(doc.complete))
+            .catch((err) => console.error(err, 'App onAuthStateChange'));
+        }
 
-      if (init) {
         setInit(false);
       }
     });
 
-    return sub;
+    return () => {
+      isMounted = false;
+      return sub();
+    };
   }, []);
 
   if (init) {
@@ -66,11 +73,15 @@ function App() {
                   <Route exact path="/password/change" component={PassChange} />
                   <Route exact path="/room/create" component={CreateRoom} />
                   <Route exact path="/liked" component={Liked} />
+<<<<<<< HEAD
                   <Route exact path="/chats" component={Chats} />
                   <Route exact path="/chats/u" component={Chat} />
                   <Route exact path="/groups/groupchat" component={GroupChat} />
                   <Route exact path="/groups/groupchatting" component={GroupChatting} />
                   <Route exact path="/groups/grouplist" component={GroupList} />
+=======
+                  <Route exact path="/saved" component={Saved} />
+>>>>>>> 030bfaf527d314618e3d9b55c779a58ee92651fe
                 </>
               )}
               {(!user || (user && !complete)) && (

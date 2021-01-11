@@ -1,5 +1,12 @@
 import React, {useState, useContext, useEffect} from 'react';
-import {View, ScrollView, StyleSheet, Image} from 'react-native';
+import {
+  View,
+  ScrollView,
+  StyleSheet,
+  Image,
+  Alert,
+  TouchableOpacity,
+} from 'react-native';
 import {useHistory} from 'react-router-native';
 import {
   Paragraph,
@@ -13,7 +20,11 @@ import {
 import {Picker} from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import GetLocation from 'react-native-get-location';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {faCropAlt, faTrash} from '@fortawesome/free-solid-svg-icons';
 import gravatar from 'gravatar';
+import ImagePicker from 'react-native-image-crop-picker';
+import storage from '@react-native-firebase/storage';
 import * as geofire from 'geofire-common';
 
 import setupStyles from '../../styles/auth/setup';
@@ -35,17 +46,28 @@ function Setup() {
   const history = useHistory();
   const {user, setComplete, complete} = useContext(AppContext);
 
+  const defaultGravatarImage = gravatar.url(
+    user.email,
+    gravatarPicOptions,
+    'https',
+  );
+
   const [init, setInit] = useState(true);
   const [error, setError] = useState([]);
   const [tag, setTag] = useState('');
   const [date, setDate] = useState(Date.now());
   const [showTagModal, setShowTagModal] = useState(false);
+  const [previewImage, setPreviewImage] = useState({
+    img: defaultGravatarImage,
+    ext: false,
+  });
+  const [isPreviewing, setIsPreviewing] = useState(false);
   const [choosedTags, setChoosedTags] = useState([]);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [userinfo, setUserinfo] = useState({
     uid: user.uid,
     name: '',
-    picture: gravatar.url(user.email, gravatarPicOptions, 'https'),
+    picture: defaultGravatarImage,
     tags: [],
     status: '',
     age: 0,
@@ -56,12 +78,25 @@ function Setup() {
   });
 
   useEffect(() => {
-    setInit(false);
     let isMounted = true;
 
     getUserById(user.uid)
       .then((loggedUser) => {
         if (isMounted) {
+          if (loggedUser.complete) {
+            setUserinfo(loggedUser);
+            setPreviewImage({img: loggedUser.picture, ext: false});
+            setDate(
+              new Date(new Date(Date.now()).getFullYear() - loggedUser.age, 1),
+            );
+            setInit(false);
+          }
+
+          if (!loggedUser.complete) {
+            setUserinfo({...userinfo, ...loggedUser});
+            setInit(false);
+          }
+
           GetLocation.getCurrentPosition({
             enableHighAccuracy: true,
             timeout: 10000,
@@ -70,13 +105,6 @@ function Setup() {
               setUserinfo((p) => ({...p, location: {longitude, latitude}})),
             )
             .catch((err) => console.error(err, 'Setup useEffect error'));
-        }
-
-        if (loggedUser.complete && isMounted) {
-          setUserinfo(loggedUser);
-          setDate(
-            new Date(new Date(Date.now()).getFullYear() - loggedUser.age, 1),
-          );
         }
       })
       .catch((err) => console.error(err, 'Setup useEffect error'));
@@ -95,7 +123,7 @@ function Setup() {
     setShowDatePicker(false);
   }
 
-  function saveProfileInfo() {
+  async function saveProfileInfo() {
     setError([]);
 
     if (!isName(userinfo.name)) {
@@ -116,24 +144,41 @@ function Setup() {
       ]);
     }
 
-    updateUserById({
-      ...userinfo,
-      complete: true,
-      minAge: +userinfo.minAge,
-      location: {
-        ...userinfo.location,
-        geohash: geofire.geohashForLocation([
-          parseFloat(userinfo.location.latitude),
-          parseFloat(userinfo.location.longitude),
-        ]),
-      },
-      picture: gravatar.url(user.email, gravatarPicOptions, 'https'),
-    })
-      .then(() => {
-        setComplete(true);
-        history.push('/');
-      })
-      .catch((err) => console.log(err, 'Setup updateUserById error'));
+    let userImg;
+    if (previewImage.ext) {
+      try {
+        const path = `user_images/${user.uid}.${previewImage.ext}`;
+        const ref = storage().ref(path);
+        await ref.putFile(previewImage.img);
+        userImg = await storage().ref(path).getDownloadURL();
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    try {
+      await updateUserById({
+        ...userinfo,
+        complete: true,
+        saved: userinfo.saved || [],
+        liked: userinfo.liked || [],
+        disliked: userinfo.disliked || [],
+        minAge: +userinfo.minAge,
+        location: {
+          ...userinfo.location,
+          geohash: geofire.geohashForLocation([
+            parseFloat(userinfo.location.latitude),
+            parseFloat(userinfo.location.longitude),
+          ]),
+        },
+        picture: userImg || userinfo.picture || defaultGravatarImage,
+      });
+
+      setComplete(true);
+      history.push('/');
+    } catch (err) {
+      console.log(err, 'Setup updateUserById error');
+    }
   }
 
   function findTag(text) {
@@ -145,6 +190,19 @@ function Setup() {
     }
   }
 
+  function cropImg() {
+    ImagePicker.openPicker({
+      width: 1080,
+      height: 1920,
+      cropping: true,
+    })
+      .then(async (image) => {
+        setPreviewImage({img: image.path, ext: image.path.split('.').pop()});
+        setIsPreviewing(true);
+      })
+      .catch((err) => console.log(err));
+  }
+
   function addToTags(tg) {
     if (userinfo.tags.indexOf(tg) !== -1) {
       return;
@@ -152,6 +210,25 @@ function Setup() {
     setChoosedTags((p) => p.filter((e) => e.name !== tg));
     setUserinfo((p) => ({...p, tags: [...p.tags, tg]}));
   }
+
+  const confirmDeletAlert = (tagName) =>
+    Alert.alert(
+      'Confirm',
+      `Do you want to remove ${tagName}?`,
+      [
+        {text: 'Cancel', style: 'cancel'},
+        {
+          text: 'Remove',
+          onPress: () => {
+            setUserinfo((p) => ({
+              ...p,
+              tags: p.tags.filter((e) => e !== tagName),
+            }));
+          },
+        },
+      ],
+      {cancelable: false},
+    );
 
   if (init) {
     return null;
@@ -213,7 +290,33 @@ function Setup() {
           ...styles.fixes,
         }}>
         <View>
-          <Image style={styles.avatar} source={{uri: userinfo.picture}} />
+          <Image style={styles.avatar} source={{uri: previewImage.img}} />
+
+          <View style={styles.cropView}>
+            <TouchableOpacity onPress={() => cropImg()}>
+              <FontAwesomeIcon
+                icon={faCropAlt}
+                size={30}
+                style={styles.cropIcon}
+              />
+            </TouchableOpacity>
+          </View>
+
+          {isPreviewing && (
+            <View style={styles.removeView}>
+              <TouchableOpacity
+                onPress={() => {
+                  setPreviewImage({img: defaultGravatarImage, ext: false});
+                  setIsPreviewing(false);
+                }}>
+                <FontAwesomeIcon
+                  icon={faTrash}
+                  size={30}
+                  style={styles.removeIcon}
+                />
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
 
         <View style={styles.row}>
@@ -283,7 +386,7 @@ function Setup() {
             style={styles.numericInput}
             mode="flat"
             keyboardType="numeric"
-            value={String(userinfo.minAge)}
+            value={String(userinfo.minAge || 18)}
             underlineColor="transparent"
             maxLength={2}
             onChangeText={(minAge) => setUserinfo((p) => ({...p, minAge}))}
@@ -300,12 +403,7 @@ function Setup() {
                 key={i}
                 mode="outlined"
                 style={styles.chips}
-                onPress={() =>
-                  setUserinfo((p) => ({
-                    ...p,
-                    tags: p.tags.filter((e) => e !== tg),
-                  }))
-                }>
+                onPress={() => confirmDeletAlert(tg)}>
                 {tg}
               </Chip>
             ))}

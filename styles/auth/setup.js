@@ -10,6 +10,32 @@ export default {
   w100: {
     width: '100%',
   },
+  cropView: {
+    position: 'absolute',
+    bottom: 35,
+    right: 35,
+    backgroundColor: '#202020',
+    borderWidth: 0,
+    borderColor: '#000',
+    padding: 15,
+    borderRadius: 35,
+  },
+  removeView: {
+    position: 'absolute',
+    top: 0,
+    right: 35,
+    backgroundColor: '#202020',
+    borderWidth: 0,
+    borderColor: '#000',
+    padding: 15,
+    borderRadius: 35,
+  },
+  cropIcon: {
+    color: '#fff',
+  },
+  removeIcon: {
+    color: '#fff',
+  },
   numericInput: {
     width: 45,
     marginLeft: 'auto',
@@ -64,10 +90,8 @@ export default {
     marginRight: -15,
   },
   avatar: {
-    width: 250,
-    height: 250,
-    marginLeft: 'auto',
-    marginRight: 'auto',
+    width: '100%',
+    aspectRatio: 1 / 1,
     marginBottom: 30,
     borderRadius: 500,
   },

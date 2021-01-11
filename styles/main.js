@@ -7,12 +7,11 @@ export default {
     padding: 20,
     zIndex: 1,
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
   },
   topBarIcon: {
     color: '#8E44AD',
     zIndex: 2,
-    marginHorizontal: 20,
   },
   mainImageBlock: {
     flex: 1,
@@ -21,7 +20,7 @@ export default {
   mainImage: {
     zIndex: -1,
     width: '100%',
-    aspectRatio: 3 / 4,
+    height: '100%',
     resizeMode: 'cover',
   },
   userinfo: {
@@ -62,5 +61,24 @@ export default {
   },
   likeBtn: {
     color: 'red',
+  },
+  notFoundView: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  notFoundIcon: {
+    alignSelf: 'center',
+    color: '#ddd',
+    margin: 'auto',
+  },
+  notFound: {
+    marginTop: 20,
+    fontSize: 15,
+    color: '#aaa',
+  },
+  notFoundButton: {
+    marginTop: 15,
   },
 };

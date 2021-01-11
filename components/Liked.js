@@ -1,51 +1,69 @@
-import React from 'react';
-import {ScrollView, StyleSheet, View, Image} from 'react-native';
+import React, {useContext, useEffect, useState} from 'react';
+import {Link} from 'react-router-native';
+import {
+  ScrollView,
+  StyleSheet,
+  View,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
+import {Text} from 'react-native-paper';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {faHeartBroken} from '@fortawesome/free-solid-svg-icons';
 import LightHeader from './layouts/LightHeader';
+import {getLiked} from '../api/user';
+import AppContext from '../contexts/AppContext';
+import likedStyles from '../styles/liked';
+
+const styles = StyleSheet.create(likedStyles);
 
 function Liked() {
+  const {user} = useContext(AppContext);
+
+  const [init, setInit] = useState(false);
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    getLiked(user.uid)
+      .then((res) => setUsers(res))
+      .catch((err) => console.error(err))
+      .finally(() => setInit(true));
+  }, []);
+
+  if (!init) {
+    return null;
+  }
+
   return (
     <View style={styles.container}>
-      <ScrollView>
+      <ScrollView contentContainerStyle={styles.scrollView}>
         <LightHeader title="They like you" />
 
-        <View style={styles.images}>
-          {[...Array(20).keys()].map((e, i) => (
-            <View key={i} style={styles.imageBlock}>
-              <Image
-                source={{
-                  uri: 'https://via.placeholder.com/720x720',
-                }}
-                style={styles.image}
-              />
-            </View>
-          ))}
-        </View>
+        {users.length === 0 && (
+          <View style={styles.notFoundView}>
+            <FontAwesomeIcon
+              style={styles.icon}
+              size={150}
+              icon={faHeartBroken}
+            />
+            <Text style={styles.notFound}>No one likes you :(</Text>
+          </View>
+        )}
+
+        {users.length > 0 && (
+          <View style={styles.images}>
+            {users.map((e, i) => (
+              <View style={styles.imageBlock} key={i}>
+                <Link to={`/profile/${e.uid}`} component={TouchableOpacity}>
+                  <Image source={{uri: e.picture}} style={styles.image} />
+                </Link>
+              </View>
+            ))}
+          </View>
+        )}
       </ScrollView>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: 'column',
-    backgroundColor: '#fff',
-  },
-  images: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexWrap: 'wrap',
-  },
-  imageBlock: {
-    width: '33.3%',
-    padding: 10,
-  },
-  image: {
-    width: '100%',
-    aspectRatio: 1,
-    borderRadius: 300,
-  },
-});
 
 export default Liked;

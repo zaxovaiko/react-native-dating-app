@@ -5,12 +5,14 @@ export default {
   },
   row: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
   },
   mb: {
     marginBottom: 10,
   },
   mr: {
     marginRight: 5,
+    marginBottom: 5,
   },
   sectionTitle: {
     fontWeight: '700',
@@ -23,7 +25,7 @@ export default {
   },
   mainImg: {
     width: '100%',
-    aspectRatio: 3 / 4,
+    aspectRatio: 9 / 16,
     resizeMode: 'cover',
   },
   location: {
@@ -36,6 +38,15 @@ export default {
     padding: 15,
     width: '100%',
     backgroundColor: 'rgba(0, 0, 0, .65)',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  userinfoIcons: {
+    color: '#fff',
+  },
+  userinfoIconsBlock: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   username: {
     fontSize: 20,

@@ -10,8 +10,10 @@ import {
 } from 'react-native-paper';
 import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Link, useHistory} from 'react-router-native';
-
+import registerStyles from '../../styles/auth/register';
 import {createUser} from '../../api/user';
+
+const styles = StyleSheet.create(registerStyles);
 
 function Register() {
   const history = useHistory();
@@ -99,49 +101,5 @@ function Register() {
     </ScrollView>
   );
 }
-
-const colors = {
-  primary: {color: '#6200ee'},
-  white: {color: '#fff'},
-};
-
-const styles = StyleSheet.create({
-  page: {
-    flex: 1,
-    flexDirection: 'column',
-    backgroundColor: '#fff',
-  },
-  flexContainer: {
-    flex: 1,
-    textAlign: 'center',
-    justifyContent: 'space-between',
-  },
-  container: {
-    padding: 15,
-  },
-  text: {
-    textAlign: 'center',
-    paddingBottom: 10,
-    paddingTop: 10,
-  },
-  input: {
-    marginBottom: 10,
-    borderRadius: 5,
-  },
-  btn: {
-    marginLeft: 'auto',
-    marginRight: 'auto',
-  },
-  checkbox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  color: colors.primary,
-  error: {
-    color: 'red',
-    textAlign: 'center',
-    marginBottom: 10,
-  },
-});
 
 export default Register;
