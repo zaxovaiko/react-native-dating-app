@@ -53,6 +53,42 @@ function App() {
 
   return (
     <AppContext.Provider value={{user, complete, setUser, setComplete}}>
+<<<<<<< HEAD
+      <PaperProvider>
+        <NativeRouter>
+          <BackButton>
+            {user && !complete && (
+              <>
+                <Route exact path={['/', '/setup']} component={Setup} />
+              </>
+            )}
+            {user && complete && (
+              <>
+                <Route exact path="/" component={Main} />
+                <Route exact path="/profile" component={Profile} />
+                <Route exact path="/nearby" component={Nearby} />
+                <Route exact path="/setup" component={Setup} />
+                <Route exact path="/settings" component={Settings} />
+                <Route exact path="/password/change" component={PassChange} />
+                <Route exact path="/chats/groups" component={Groups} />
+                <Route exact path="/room/create" component={CreateRoom} />
+                <Route exact path="/chats" component={MainChat} />
+                <Route exact path="/chats/groupchats" component={GroupChats} />
+                <Route exact path="/chats/correspondence" component={Correspondence} />
+                <Route exact path="/liked" component={Liked} />
+              </>
+            )}
+            {!user && (
+              <>
+                <Route exact path={['/', '/login']} component={Login} />
+                <Route exact path="/register" component={Register} />
+                <Route exact path="/password/recover" component={PassRecover} />
+              </>
+            )}
+          </BackButton>
+        </NativeRouter>
+      </PaperProvider>
+=======
       <SafeAreaProvider>
         <PaperProvider>
           <NativeRouter>
@@ -94,6 +130,7 @@ function App() {
           </NativeRouter>
         </PaperProvider>
       </SafeAreaProvider>
+>>>>>>> 5ee82578b4f9ee5d6f118d1fe78bee5d9c558b82
     </AppContext.Provider>
   );
 }
