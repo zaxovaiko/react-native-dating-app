@@ -83,7 +83,7 @@ export function createUser(user) {
     email: user.email,
     uid: user.uid,
     complete: false,
-    rooms: []
+    rooms: [],
   });
 }
 

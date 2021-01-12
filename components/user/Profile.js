@@ -8,10 +8,16 @@ import {
 } from 'react-native';
 import {Text, Chip, Caption} from 'react-native-paper';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faUserEdit, faCommentDots} from '@fortawesome/free-solid-svg-icons';
+import ImagePicker from 'react-native-image-crop-picker';
+import storage from '@react-native-firebase/storage';
+import {
+  faUserEdit,
+  faCommentDots,
+  faUpload,
+} from '@fortawesome/free-solid-svg-icons';
 
 import profileStyles from '../../styles/profile';
-import {getUserById, isLikingUser} from '../../api/user';
+import {getUserById, isLikingUser, updateUserById} from '../../api/user';
 import AppContext from '../../contexts/AppContext';
 import LightHeader from '../layouts/LightHeader';
 import {Link} from 'react-router-native';
@@ -27,12 +33,15 @@ function Profile({match}) {
   const [showStatus, setShowStatus] = useState(false);
   const [isLiking, setIsLiking] = useState(false);
   const [profile, setProfile] = useState();
+  const [previewImgs, setPreviewImgs] = useState({});
 
   useEffect(() => {
     let isMounted = true;
 
     getUserById(match.params.uid)
       .then((usr) => {
+        setPreviewImgs(usr.images || {});
+
         isLikingUser(usr.uid, user.uid)
           .then((res) => {
             if (isMounted) {
@@ -49,6 +58,37 @@ function Profile({match}) {
       isMounted = false;
     };
   }, []);
+
+  function uploadImage(key) {
+    ImagePicker.openPicker({
+      width: 1080,
+      height: 1920,
+      cropping: true,
+    })
+      .then(async (image) => {
+        setPreviewImgs((p) => ({...p, [key]: image.path}));
+
+        try {
+          const ext = image.path.split('.').pop();
+          const path = `user_uploads/${user.uid}.${key}.${ext}`;
+
+          // save to db
+          const ref = storage().ref(path);
+          await ref.putFile(image.path);
+
+          // get url and update user
+          const url = await storage().ref(path).getDownloadURL();
+
+          await updateUserById({
+            ...profile,
+            images: {...previewImgs, [key]: url},
+          });
+        } catch (error) {
+          console.log(error);
+        }
+      })
+      .catch((err) => console.log(err));
+  }
 
   if (!init) {
     return null;
@@ -127,19 +167,37 @@ function Profile({match}) {
             </View>
           )}
 
-          <View>
-            <Text style={styles.sectionTitle}>Photos:</Text>
-            <View style={styles.igImages}>
-              {[...Array(4).keys()].map((_, i) => (
-                <View style={styles.igImageWrapper} key={i}>
-                  <Image
-                    source={{uri: profile.picture}}
-                    style={styles.igImage}
-                  />
-                </View>
-              ))}
+          {Object.keys(previewImgs).length !== 0 && (
+            <View>
+              <Text style={styles.sectionTitle}>Photos:</Text>
+              <View style={styles.igImages}>
+                {[...Array(4).keys()].map((_, i) => (
+                  <View style={styles.igImageWrapper} key={i}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        if (user.uid === profile.uid) {
+                          uploadImage(i);
+                        }
+                      }}>
+                      {previewImgs[i] && (
+                        <Image
+                          source={{uri: previewImgs[i]}}
+                          style={styles.igImage}
+                        />
+                      )}
+                      {user.uid === profile.uid && !previewImgs[i] && (
+                        <FontAwesomeIcon
+                          icon={faUpload}
+                          size={22}
+                          style={styles.uploadIcon}
+                        />
+                      )}
+                    </TouchableOpacity>
+                  </View>
+                ))}
+              </View>
             </View>
-          </View>
+          )}
         </View>
       </ScrollView>
     </View>

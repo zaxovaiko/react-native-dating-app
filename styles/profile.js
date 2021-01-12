@@ -10,6 +10,10 @@ export default {
   mb: {
     marginBottom: 10,
   },
+  uploadIcon: {
+    color: '#ddd',
+    paddingVertical: 35,
+  },
   mr: {
     marginRight: 5,
     marginBottom: 5,
@@ -55,7 +59,11 @@ export default {
   },
   igImageWrapper: {
     width: '25%',
-    paddingHorizontal: 5,
+    borderWidth: 1,
+    borderColor: '#f4f4f4',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 1,
   },
   igImages: {
     flexDirection: 'row',
