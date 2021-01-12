@@ -8,7 +8,13 @@ import {
   TextInput,
   Title,
 } from 'react-native-paper';
-import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  Alert,
+} from 'react-native';
 import {Link, useHistory} from 'react-router-native';
 import registerStyles from '../../styles/auth/register';
 import {createUser} from '../../api/user';
@@ -49,6 +55,26 @@ function Register() {
     }
   }
 
+  const showTerms = () =>
+    Alert.alert(
+      'Our right and terms',
+      `Copyright 2021 Lover
+
+      Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+      
+      The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+      
+      THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+      `,
+      [
+        {
+          text: 'OK',
+          onPress: () => {},
+        },
+      ],
+      {cancelable: false},
+    );
+
   return (
     <ScrollView contentContainerStyle={{...styles.page, ...styles.container}}>
       <View style={styles.flexContainer}>
@@ -80,7 +106,11 @@ function Register() {
               onPress={() => setCheck((p) => !p)}
               color={'blue'}
             />
-            <Text onPress={() => setCheck((p) => !p)}>
+            <Text
+              onPress={() => {
+                setCheck((p) => !p);
+                return showTerms();
+              }}>
               I agree with rights and terms
             </Text>
           </View>

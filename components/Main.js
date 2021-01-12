@@ -34,6 +34,7 @@ function Main() {
     {icon: faMapMarkerAlt, link: '/nearby'},
     {icon: faHeart, link: '/liked'},
     {icon: faComments, link: '/chats'},
+    // {icon: faComments, link: '/chats/uT6C1eWyXCP5535SbIEfNUs81th2'},
   ];
 
   const [init, setInit] = useState(true);

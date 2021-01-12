@@ -21,6 +21,8 @@ import GroupChatting from './components/groups/GroupChatting';
 import GroupList from './components/groups/GroupList';
 import GroupChat from './components/groups/GroupChat';
 import Saved from './components/Saved';
+import Chat from './components/chats/Chat';
+import Chats from './components/chats/Chats';
 
 function App() {
   const [init, setInit] = useState(true);
@@ -64,6 +66,8 @@ function App() {
                 <>
                   <Route exact path="/" component={Main} />
                   <Route exact path="/profile/:uid" component={Profile} />
+                  <Route exact path="/chats/:uid" component={Chat} />
+                  <Route exact path="/chats" component={Chats} />
                   <Route exact path="/nearby" component={Nearby} />
                   <Route exact path="/setup" component={Setup} />
                   <Route exact path="/settings" component={Settings} />

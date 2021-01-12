@@ -10,7 +10,7 @@ const styles = StyleSheet.create(loginStyles);
 function Login() {
   const history = useHistory();
   const [email, setEmail] = useState('zaxovaiko@gmail.com');
-  const [password, setPassword] = useState('vova123');
+  const [password, setPassword] = useState('password');
   const [error, setError] = useState('');
 
   function login() {

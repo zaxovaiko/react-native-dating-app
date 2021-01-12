@@ -81,11 +81,13 @@ function Profile({match}) {
                 </Link>
               )}
               {isLiking && match.params.uid !== user.uid && (
-                <FontAwesomeIcon
-                  icon={faCommentDots}
-                  size={30}
-                  style={styles.userinfoIcons}
-                />
+                <Link component={TouchableOpacity} to={`/chats/${profile.uid}`}>
+                  <FontAwesomeIcon
+                    icon={faCommentDots}
+                    size={30}
+                    style={styles.userinfoIcons}
+                  />
+                </Link>
               )}
             </View>
           </View>
