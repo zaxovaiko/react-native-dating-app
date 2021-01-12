@@ -53,7 +53,7 @@ function Create() {
   function create(){
     roomId = uuidv4();
     createRoom(roomName, roomTopic, tags, roomId)
-      .then(() => history.push('/groups/groupchatting'))
+      .then(() => history.push('/groups/grouplist'))
   }
 
 

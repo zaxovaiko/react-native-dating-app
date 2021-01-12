@@ -80,7 +80,6 @@ const GroupChatting = props => {
   }
 
   useEffect(() => {
-    console.log(location.state);
 
     const messagesListener = firestore()
       .collection('rooms')
@@ -134,6 +133,7 @@ const GroupChatting = props => {
   }
 
   return (
+    
       <GiftedChat
         messages={messages}
         onSend={handleSend}
@@ -147,7 +147,9 @@ const GroupChatting = props => {
         scrollToBottomComponent={scrollToBottomComponent}
         renderLoading={renderLoading}
         renderSystemMessage={renderSystemMessage}
-      />
+      >
+      </GiftedChat>
+      
   );
 };
 export default GroupChatting;
