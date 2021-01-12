@@ -19,7 +19,6 @@ import Liked from './components/Liked';
 import CreateRoom from './components/room/Create';
 import GroupChatting from './components/groups/GroupChatting';
 import GroupList from './components/groups/GroupList';
-import GroupChat from './components/groups/GroupChat';
 import Saved from './components/Saved';
 import Chat from './components/chats/Chat';
 import Chats from './components/chats/Chats';
@@ -74,7 +73,6 @@ function App() {
                   <Route exact path="/password/change" component={PassChange} />
                   <Route exact path="/room/create" component={CreateRoom} />
                   <Route exact path="/liked" component={Liked} />
-                  <Route exact path="/groups/groupchat" component={GroupChat} />
                   <Route
                     exact
                     path="/groups/groupchatting"
