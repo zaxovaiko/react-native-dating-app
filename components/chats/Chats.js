@@ -49,8 +49,9 @@ export default function Chats() {
           const docs = [];
           for (const chat of res.docs.map((e) => e.data())) {
             const idx = chat.aids.indexOf(user.uid);
-            const partUid = chat.aids[idx - 1];
+            const partUid = chat.aids[(idx + 1) % 2];
             docs.push({...chat, part: await getUserById(partUid)});
+            // generate ids
           }
           setChats(docs);
           setInit(true);

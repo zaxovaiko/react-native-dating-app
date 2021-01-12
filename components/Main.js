@@ -4,17 +4,13 @@ import {Text, Headline, Button} from 'react-native-paper';
 import {Link} from 'react-router-native';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {
-  faCog,
   faStar,
-  faUserCircle,
-  faMapMarkerAlt,
   faHeart,
-  faComments,
   faHeartBroken,
   faUserTimes,
 } from '@fortawesome/free-solid-svg-icons';
 import {faStar as frStar} from '@fortawesome/free-regular-svg-icons';
-
+import TopBar from './layouts/TopBar';
 import mainStyles from '../styles/main';
 import {
   getUserFilteredByLocation,
@@ -27,15 +23,6 @@ const styles = StyleSheet.create(mainStyles);
 
 function Main() {
   const {user} = useContext(AppContext);
-
-  const icons = [
-    {icon: faCog, link: '/settings'},
-    {icon: faUserCircle, link: `/profile/${user.uid}`},
-    {icon: faMapMarkerAlt, link: '/nearby'},
-    {icon: faHeart, link: '/liked'},
-    {icon: faComments, link: '/chats'},
-    // {icon: faComments, link: '/chats/uT6C1eWyXCP5535SbIEfNUs81th2'},
-  ];
 
   const [init, setInit] = useState(true);
   const [currentUser, setCurrentUser] = useState();
@@ -182,13 +169,7 @@ function Main() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.topBar}>
-        {icons.map(({icon, link}, i) => (
-          <Link key={i} to={link} component={TouchableOpacity}>
-            <FontAwesomeIcon icon={icon} size={26} style={styles.topBarIcon} />
-          </Link>
-        ))}
-      </View>
+      <TopBar />
 
       {!profile && (
         <View style={styles.notFoundView}>

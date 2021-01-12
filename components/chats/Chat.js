@@ -16,6 +16,7 @@ export default function Chat({match}) {
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
+    let sub;
     (async () => {
       try {
         const cu = await getUserById(user.uid);
@@ -43,7 +44,7 @@ export default function Chat({match}) {
           docId = docs.docs[0].id;
         }
 
-        firestore()
+        sub = firestore()
           .collection('chats')
           .doc(docs.docs[0].id)
           .collection('messages')
@@ -57,6 +58,8 @@ export default function Chat({match}) {
         console.log(error);
       }
     })();
+
+    return () => sub();
   }, []);
 
   const onSend = useCallback((messages = []) => {
