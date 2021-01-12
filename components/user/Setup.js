@@ -71,7 +71,7 @@ function Setup() {
     tags: [],
     status: '',
     age: 0,
-    minAge: 18,
+    minAge: '18',
     gender: 0,
     interestedIn: 1,
     location: {longitute: 0, latitude: 0, geohash: ''},
@@ -386,7 +386,7 @@ function Setup() {
             style={styles.numericInput}
             mode="flat"
             keyboardType="numeric"
-            value={String(userinfo.minAge || 18)}
+            value={String(userinfo.minAge)}
             underlineColor="transparent"
             maxLength={2}
             onChangeText={(minAge) => setUserinfo((p) => ({...p, minAge}))}

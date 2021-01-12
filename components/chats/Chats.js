@@ -6,6 +6,8 @@ import firestore from '@react-native-firebase/firestore';
 import AppContext from '../../contexts/AppContext';
 import LightHeader from '../layouts/LightHeader';
 import {getUserById} from '../../api/user';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {faUsers} from '@fortawesome/free-solid-svg-icons';
 
 const Item = ({name, picture, uid}) => (
   <Link component={TouchableOpacity} to={`/chats/${uid}`}>
@@ -32,6 +34,9 @@ const styles = StyleSheet.create({
     marginLeft: 15,
     fontSize: 15,
   },
+  iconUsers: {
+    color: '#ddd',
+  },
 });
 
 export default function Chats() {
@@ -51,7 +56,6 @@ export default function Chats() {
             const idx = chat.aids.indexOf(user.uid);
             const partUid = chat.aids[(idx + 1) % 2];
             docs.push({...chat, part: await getUserById(partUid)});
-            // generate ids
           }
           setChats(docs);
           setInit(true);
@@ -78,6 +82,13 @@ export default function Chats() {
   return (
     <View>
       <LightHeader title="Chats" />
+
+      <Link component={TouchableOpacity} to={'/groups/grouplist'}>
+        <View style={styles.item}>
+          <FontAwesomeIcon icon={faUsers} size={32} style={styles.iconUsers} />
+          <Text style={styles.title}>Groups</Text>
+        </View>
+      </Link>
 
       <FlatList
         data={chats}

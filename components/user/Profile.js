@@ -167,7 +167,8 @@ function Profile({match}) {
             </View>
           )}
 
-          {Object.keys(previewImgs).length !== 0 && (
+          {(Object.keys(previewImgs).length !== 0 ||
+            user.uid === profile.uid) && (
             <View>
               <Text style={styles.sectionTitle}>Photos:</Text>
               <View style={styles.igImages}>
@@ -177,6 +178,8 @@ function Profile({match}) {
                       onPress={() => {
                         if (user.uid === profile.uid) {
                           uploadImage(i);
+                        } else {
+                          //
                         }
                       }}>
                       {previewImgs[i] && (

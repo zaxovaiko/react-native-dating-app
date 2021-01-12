@@ -1,8 +1,10 @@
 import React, {useState, useEffect, useCallback, useContext} from 'react';
+import {View} from 'react-native';
 import {GiftedChat} from 'react-native-gifted-chat';
 import {useHistory} from 'react-router-dom';
 import firestore from '@react-native-firebase/firestore';
 import {getUserById} from '../../api/user';
+import LightHeader from '../layouts/LightHeader';
 import AppContext from '../../contexts/AppContext';
 
 let docId;
@@ -14,13 +16,17 @@ export default function Chat({match}) {
   const [init, setInit] = useState(false);
   const [currentUser, setCurrentUser] = useState({});
   const [messages, setMessages] = useState([]);
+  const [part, setPart] = useState(false);
 
   useEffect(() => {
-    let sub;
+    let sub = () => {};
     (async () => {
       try {
         const cu = await getUserById(user.uid);
         setCurrentUser(cu);
+
+        const par = await getUserById(match.params.uid);
+        setPart(par);
 
         const id =
           user.uid > match.params.uid
@@ -37,7 +43,7 @@ export default function Chat({match}) {
             .collection('chats')
             .add({
               ids: id,
-              aids: [match.param.uid, user.uid],
+              aids: [match.params.uid, user.uid],
             });
           docId = docRef.id;
         } else {
@@ -83,18 +89,21 @@ export default function Chat({match}) {
   }
 
   return (
-    <GiftedChat
-      showAvatarForEveryMessage={false}
-      onPressAvatar={() => {
-        history.push(`/profile/${match.params.uid}`);
-      }}
-      messages={messages}
-      onSend={(messages) => onSend(messages)}
-      user={{
-        _id: currentUser.uid,
-        name: currentUser.name,
-        avatar: currentUser.picture,
-      }}
-    />
+    <View style={{flex: 1}}>
+      <LightHeader title={`${part.name}`} />
+      <GiftedChat
+        showAvatarForEveryMessage={false}
+        onPressAvatar={() => {
+          history.push(`/profile/${match.params.uid}`);
+        }}
+        messages={messages}
+        onSend={(messages) => onSend(messages)}
+        user={{
+          _id: currentUser.uid,
+          name: currentUser.name,
+          avatar: currentUser.picture,
+        }}
+      />
+    </View>
   );
 }
