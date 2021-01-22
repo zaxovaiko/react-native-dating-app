@@ -5,6 +5,6 @@ export function getAgeFromDate(date) {
       new Date(Date.now() - date.getTime()).getUTCFullYear() - 1970,
     );
   } catch (err) {
-    throw new Error('Invalid date');
+    throw new Error('Invalid date type');
   }
 }

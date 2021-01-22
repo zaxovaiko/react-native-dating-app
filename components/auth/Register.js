@@ -81,9 +81,10 @@ function Register() {
         <Text style={{...styles.text, ...styles.color}}>lover</Text>
 
         <View>
-          <Title style={styles.text}>Sign up</Title>
+          <Title testID="register-title" style={styles.text}>Sign up</Title>
           {error.length > 0 && <Text style={styles.error}>{error}</Text>}
           <TextInput
+            testID="register-email"
             style={styles.input}
             label="Email"
             underlineColor="transparent"
@@ -92,6 +93,7 @@ function Register() {
           />
 
           <TextInput
+            testID="register-pass"
             style={styles.input}
             label="Password"
             underlineColor="transparent"
@@ -107,6 +109,7 @@ function Register() {
               color={'blue'}
             />
             <Text
+              testID="register-terms"
               onPress={() => {
                 setCheck((p) => !p);
                 return showTerms();
@@ -118,13 +121,14 @@ function Register() {
 
         <View>
           <Button
+            testID="register-submit"
             style={styles.btn}
             mode="contained"
             onPress={() => register()}>
             Continue
           </Button>
           <Link component={TouchableOpacity} to="/login">
-            <Caption style={styles.text}>I already have an account</Caption>
+            <Caption testID="register-login-link" style={styles.text}>I already have an account</Caption>
           </Link>
         </View>
       </View>

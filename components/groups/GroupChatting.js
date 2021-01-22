@@ -9,6 +9,7 @@ import {IconButton} from 'react-native-paper';
 import {ActivityIndicator, View, StyleSheet} from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
+import LightHeader from '../layouts/LightHeader';
 import {useLocation} from 'react-router-dom';
 
 const GroupChatting = () => {
@@ -134,17 +135,20 @@ const GroupChatting = () => {
   }
 
   return (
-    <GiftedChat
-      messages={messages}
-      onSend={handleSend}
-      user={{_id: user.uid}}
-      renderBubble={renderBubble}
-      placeholder="Type your message here..."
-      renderSend={renderSend}
-      scrollToBottomComponent={scrollToBottomComponent}
-      renderLoading={renderLoading}
-      renderSystemMessage={renderSystemMessage}
-    />
+    <View style={{flex: 1}}>
+      <LightHeader title={`${location.state.name} chat`} />
+      <GiftedChat
+        messages={messages}
+        onSend={handleSend}
+        user={{_id: user.uid}}
+        renderBubble={renderBubble}
+        placeholder="Type your message here..."
+        renderSend={renderSend}
+        scrollToBottomComponent={scrollToBottomComponent}
+        renderLoading={renderLoading}
+        renderSystemMessage={renderSystemMessage}
+      />
+    </View>
   );
 };
 export default GroupChatting;

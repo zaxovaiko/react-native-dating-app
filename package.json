@@ -6,7 +6,7 @@
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "start": "react-native start",
-    "test": "jest",
+    "test": "jest --verbose",
     "lint": "eslint ."
   },
   "dependencies": {
@@ -29,7 +29,6 @@
     "gravatar": "^1.8.1",
     "ngeohash": "^0.6.3",
     "react": "^16.13.1",
-    "react-dom": "^17.0.1",
     "react-native": "0.63.3",
     "react-native-bcrypt": "^2.4.0",
     "react-native-get-location": "^2.0.0",
@@ -42,22 +41,35 @@
     "react-native-svg-transformer": "^0.14.3",
     "react-native-uuid-generator": "^6.1.1",
     "react-native-vector-icons": "^7.1.0",
+    "react-router-dom": "^5.1.2",
     "react-router-native": "^5.2.0",
     "react-singletons": "^1.3.3",
-    "validator": "^13.5.2",
-    "react-router-dom": "^5.1.2"
+    "validator": "^13.5.2"
   },
   "devDependencies": {
     "@babel/core": "^7.8.4",
     "@babel/runtime": "^7.8.4",
     "@react-native-community/eslint-config": "^1.1.0",
     "babel-jest": "^25.1.0",
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.6",
     "eslint": "^6.5.1",
-    "jest": "^25.1.0",
+    "jest": "^25.5.4",
+    "jest-environment-enzyme": "^7.1.2",
+    "jest-enzyme": "^7.1.2",
     "metro-react-native-babel-preset": "^0.59.0",
+    "react-dom": "^16.14.0",
     "react-test-renderer": "16.13.1"
   },
   "jest": {
-    "preset": "react-native"
+    "preset": "react-native",
+    "transformIgnorePatterns": [
+      "node_modules/(?!react-native|react-router-native)/"
+    ],
+    "setupTestFrameworkScriptFile": "jest-enzyme",
+    "testEnvironment": "enzyme",
+    "testEnvironmentOptions": {
+      "enzymeAdapter": "react16"
+    }
   }
 }
