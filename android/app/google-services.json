@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "31826201208",
+    "firebase_url": "https://lover-1b4a9.firebaseio.com",
+    "project_id": "lover-1b4a9",
+    "storage_bucket": "lover-1b4a9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:31826201208:android:ad2e489e5dab88678e7b8d",
+        "android_client_info": {
+          "package_name": "com.datingapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "31826201208-o6qqu5ji6icquv23450cq9rimiipkc46.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD2O1pLNpEk_j66kvGmqRT2RV9L3H7n3tA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "31826201208-o6qqu5ji6icquv23450cq9rimiipkc46.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
