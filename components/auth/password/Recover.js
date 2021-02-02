@@ -44,7 +44,11 @@ function Recover() {
           underlineColor="transparent"
           onChangeText={(v) => setEmail(v)}
         />
-        {error.length > 0 && <Text style={styles.error}>{error}</Text>}
+        {error.length > 0 && (
+          <Text testID="recover-error" style={styles.error}>
+            {error}
+          </Text>
+        )}
         {success.length > 0 && <Text style={styles.success}>{success}</Text>}
 
         <Button

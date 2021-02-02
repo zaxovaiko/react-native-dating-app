@@ -70,7 +70,7 @@ export default function TopBar({currentUser}) {
   }, []);
 
   return (
-    <View style={styles.topBar}>
+    <View style={styles.topBar} testID="topbar">
       {icons.map(({icon, link, style}, i) => (
         <Link key={i} to={link} component={TouchableOpacity}>
           <FontAwesomeIcon

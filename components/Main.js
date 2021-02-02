@@ -30,7 +30,12 @@ function Main() {
   const [nextUser, setNextUser] = useState();
 
   const controlIcons = [
-    {icon: faHeartBroken, style: styles.dislikeBtn, onPress: dislikeUser},
+    {
+      icon: faHeartBroken,
+      style: styles.dislikeBtn,
+      onPress: dislikeUser,
+      testID: 'like',
+    },
     {
       icon:
         profile &&
@@ -41,8 +46,14 @@ function Main() {
           : frStar,
       style: styles.saveBtn,
       onPress: saveUser,
+      testID: 'save',
     },
-    {icon: faHeart, style: styles.likeBtn, onPress: likeUser},
+    {
+      icon: faHeart,
+      style: styles.likeBtn,
+      onPress: likeUser,
+      testID: 'dislike',
+    },
   ];
 
   async function findAndSetNextValidUser(cu, next = null) {

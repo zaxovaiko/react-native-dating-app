@@ -45,7 +45,7 @@ export function updateUserById(user) {
 
 // Gets users continiously with parameters
 export function getUserFilteredByLocation({interestedIn, location}, startAt) {
-  const {lower, upper} = locationHelper(location, 200);
+  const {lower, upper} = locationHelper(location, 1500);
 
   let ref = firestore().collection('users').where('complete', '==', true);
 

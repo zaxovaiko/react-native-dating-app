@@ -26,11 +26,15 @@ function Register() {
 
   const [error, setError] = useState('');
   const [check, setCheck] = useState(false);
-  const [email, setEmail] = useState('zaxovaiko@gmail.com');
-  const [password, setPassword] = useState('password');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   function register() {
     if (check) {
+      if (email === '' || password === '') {
+        return setError('Invalid data');
+      }
+
       auth()
         .createUserWithEmailAndPassword(email, password)
         .then(({user}) => {
@@ -45,7 +49,6 @@ function Register() {
           if (err.code === 'auth/invalid-email') {
             setError('That email address is invalid!');
           }
-
           if (err.code === 'auth/weak-password') {
             setError('Password is not strong enough!');
           }
@@ -78,11 +81,19 @@ function Register() {
   return (
     <ScrollView contentContainerStyle={{...styles.page, ...styles.container}}>
       <View style={styles.flexContainer}>
-        <Text style={{...styles.text, ...styles.color}}>lover</Text>
+        <Text testID="register-title" style={{...styles.text, ...styles.color}}>
+          lover
+        </Text>
 
         <View>
-          <Title testID="register-title" style={styles.text}>Sign up</Title>
-          {error.length > 0 && <Text style={styles.error}>{error}</Text>}
+          <Title testID="register-subtitle" style={styles.text}>
+            Sign up
+          </Title>
+          {error.length > 0 && (
+            <Text testID="register-error" style={styles.error}>
+              {error}
+            </Text>
+          )}
           <TextInput
             testID="register-email"
             style={styles.input}
@@ -128,7 +139,9 @@ function Register() {
             Continue
           </Button>
           <Link component={TouchableOpacity} to="/login">
-            <Caption testID="register-login-link" style={styles.text}>I already have an account</Caption>
+            <Caption testID="register-login-link" style={styles.text}>
+              I already have an account
+            </Caption>
           </Link>
         </View>
       </View>

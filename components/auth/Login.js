@@ -9,11 +9,14 @@ const styles = StyleSheet.create(loginStyles);
 
 function Login() {
   const history = useHistory();
-  const [email, setEmail] = useState('zaxovaiko@gmail.com');
-  const [password, setPassword] = useState('password');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
   function login() {
+    if (email === '' || password === '') {
+      return setError('Invalid data');
+    }
     auth()
       .signInWithEmailAndPassword(email, password)
       .then(() => history.push('/'))
@@ -35,17 +38,26 @@ function Login() {
   return (
     <ScrollView contentContainerStyle={{...styles.container, ...styles.page}}>
       <View style={styles.flexContainer}>
-        <Text style={{...styles.text, ...styles.primary}}>lover</Text>
+        <Text testID="login-title" style={{...styles.text, ...styles.primary}}>
+          lover
+        </Text>
 
         <View>
-          <Title style={styles.text}>Log in</Title>
-          {error.length > 0 && <Text style={styles.error}>{error}</Text>}
+          <Title testID="login-subtitle" style={styles.text}>
+            Log in
+          </Title>
+          {error.length > 0 && (
+            <Text testID="login-error" style={styles.error}>
+              {error}
+            </Text>
+          )}
 
           <TextInput
             style={styles.input}
             label="Email"
             value={email}
             underlineColor="transparent"
+            testID="login-email"
             onChangeText={(text) => setEmail(text)}
           />
           <TextInput
@@ -54,22 +66,29 @@ function Login() {
             secureTextEntry={true}
             value={password}
             underlineColor="transparent"
+            testID="login-password"
             onChangeText={(text) => setPassword(text)}
           />
 
           <View style={styles.floatRight}>
             <Link component={TouchableOpacity} to="/password/recover">
-              <Caption>Forgot password?</Caption>
+              <Caption testID="login-forgot">Forgot password?</Caption>
             </Link>
           </View>
         </View>
 
         <View>
-          <Button style={styles.btn} mode="contained" onPress={() => login()}>
+          <Button
+            testID="login-submit"
+            style={styles.btn}
+            mode="contained"
+            onPress={() => login()}>
             Log in
           </Button>
           <Link component={TouchableOpacity} to="/register">
-            <Caption style={styles.text}>Sign up</Caption>
+            <Caption testID="login-signup" style={styles.text}>
+              Sign up
+            </Caption>
           </Link>
         </View>
       </View>

@@ -290,7 +290,11 @@ function Setup() {
           ...styles.fixes,
         }}>
         <View>
-          <Image style={styles.avatar} source={{uri: previewImage.img}} />
+          <Image
+            testID="setup-img"
+            style={styles.avatar}
+            source={{uri: previewImage.img}}
+          />
 
           <View style={styles.cropView}>
             <TouchableOpacity onPress={() => cropImg()}>
